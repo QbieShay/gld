@@ -5,12 +5,12 @@ public class EnemyMovement : MonoBehaviour
 {
 
     Transform player;
-    NavMeshAgent nav;
+    UnityEngine.AI.NavMeshAgent nav;
 	// Use this for initialization
 	void Awake ()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        nav = GetComponent<NavMeshAgent>();
+        nav = GetComponent<UnityEngine.AI.NavMeshAgent>();
 	}
 	
 	// Update is called once per frame

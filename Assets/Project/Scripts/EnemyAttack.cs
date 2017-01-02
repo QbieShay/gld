@@ -8,11 +8,11 @@ public class EnemyAttack : MonoBehaviour {
     public int minimunRoll;
     int probability;
     public int meleDistance;
-    NavMeshAgent nav;
+    UnityEngine.AI.NavMeshAgent nav;
 
     void Awake()
     {
-        nav = GetComponent<NavMeshAgent>();
+        nav = GetComponent<UnityEngine.AI.NavMeshAgent>();
     }
     void Start ()
     {

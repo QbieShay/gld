@@ -5,9 +5,8 @@ public class EnemyAttack : MonoBehaviour {
 
 	// Use this for initialization
     public int diceInitiative;
-    public int minimunRoll;
+    public int minimumRoll;
     int probability;
-    public int meleDistance;
     UnityEngine.AI.NavMeshAgent nav;
 
     void Awake()
@@ -18,25 +17,26 @@ public class EnemyAttack : MonoBehaviour {
     {
 	
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+
+    public void MeleeAttack()
     {
-        if (nav.remainingDistance <= nav.stoppingDistance)
+        probability = Random.Range(1, diceInitiative);
+        if (probability > minimumRoll)
         {
-            probability = Random.Range(1, diceInitiative);
-            Debug.Log(probability);
-            if (probability > minimunRoll && nav.remainingDistance < meleDistance)
-            {
-                Debug.Log("Attack melee");
-
-            }
-            else
-            if (probability > minimunRoll && nav.remainingDistance > meleDistance)
-            {
-                Debug.Log("Attack ranged");
-
-            }
+            Debug.Log("Attack melee");
         }
+
+    }
+
+
+    public void RangeAttack()
+    {
+        probability = Random.Range(1, diceInitiative);
+        if (probability > minimumRoll)
+        {
+            Debug.Log("Attack ranged");
+        }
+
     }
 }

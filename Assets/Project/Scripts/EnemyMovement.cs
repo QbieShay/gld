@@ -19,5 +19,6 @@ public class EnemyMovement : MonoBehaviour
 	void Update ()
     {
         nav.SetDestination(player.position);
+        transform.rotation = Quaternion.LookRotation(player.transform.position-transform.position);
     }
 }

@@ -107,6 +107,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				m_Capsule.height = m_Capsule.height / 2f;
 				m_Capsule.center = m_Capsule.center / 2f;
 				m_Crouching = true;
+                OnStartedCrouching(new EventArgs());
 			}
 			else
 			{
@@ -115,11 +116,14 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, crouchRayLength, Physics.AllLayers, QueryTriggerInteraction.Ignore))
 				{
 					m_Crouching = true;
+                    OnStartedCrouching(new EventArgs());
 					return;
 				}
 				m_Capsule.height = m_CapsuleHeight;
 				m_Capsule.center = m_CapsuleCenter;
-				m_Crouching = false;
+                if (m_Crouching)
+                    OnStoppedCrouching(new EventArgs());
+                m_Crouching = false;
 			}
 		}
 
@@ -133,6 +137,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, crouchRayLength, Physics.AllLayers, QueryTriggerInteraction.Ignore))
 				{
 					m_Crouching = true;
+                    OnStartedCrouching(new EventArgs());
 				}
 			}
 		}
@@ -272,6 +277,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             EventHandler handler = StartedCrouching;
             if (handler != null)
                 handler(this, e);
+            Debug.Log("OnStartedCrouching");
         }
 
         protected virtual void OnStoppedCrouching(EventArgs e)
@@ -279,6 +285,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             EventHandler handler = StoppedCrouching;
             if (handler != null)
                 handler(this, e);
+            Debug.Log("OnStoppedCrouching");
         }
 
         protected virtual void OnStartedRolling(EventArgs e)

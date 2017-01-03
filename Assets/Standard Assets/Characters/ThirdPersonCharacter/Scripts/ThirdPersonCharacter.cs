@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace UnityStandardAssets.Characters.ThirdPerson
 {
@@ -31,7 +32,19 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		bool m_Crouching;
 
 
-		void Start()
+        public event EventHandler StartedWalking;
+        public event EventHandler StoppedWalking;
+        public event EventHandler StartedCrouching;
+        public event EventHandler StoppedCrouching;
+        public event EventHandler StartedRolling;
+        public event EventHandler StoppedRolling;
+
+        public float CurrentSpeed
+        {
+            get { return m_Rigidbody.velocity.magnitude; }
+        }
+
+        void Start()
 		{
 			m_Animator = GetComponent<Animator>();
 			m_Rigidbody = GetComponent<Rigidbody>();
@@ -58,6 +71,12 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			CheckGroundStatus();
 			move = Vector3.ProjectOnPlane(move, m_GroundNormal);
 			m_TurnAmount = Mathf.Atan2(move.x, move.z);
+
+            if (FloatIsZero(m_ForwardAmount) && !FloatIsZero(move.z))
+                OnStartedWalking(new EventArgs());
+            else if (!FloatIsZero(m_ForwardAmount) && FloatIsZero(move.z))
+                OnStoppedWalking(new EventArgs());
+
 			m_ForwardAmount = move.z;
 
 			ApplyExtraTurnRotation();
@@ -195,12 +214,16 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			if (m_IsGrounded && Time.deltaTime > 0)
 			{
 				Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
-
 				// we preserve the existing y part of the current velocity.
 				v.y = m_Rigidbody.velocity.y;
 				m_Rigidbody.velocity = v;
 			}
 		}
+
+        private bool FloatIsZero(float val, float epsilon = 0.001f)
+        {
+            return (val > -epsilon && val < epsilon);
+        }
 
 
 		void CheckGroundStatus()
@@ -225,5 +248,53 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				m_Animator.applyRootMotion = false;
 			}
 		}
-	}
+
+        #region Events
+
+        protected virtual void OnStartedWalking(EventArgs e)
+        {
+            EventHandler handler = StartedWalking;
+            if (handler != null)
+                handler(this, e);
+            Debug.Log("OnStartedWalking");
+        }
+
+        protected virtual void OnStoppedWalking(EventArgs e)
+        {
+            EventHandler handler = StoppedWalking;
+            if (handler != null)
+                handler(this, e);
+            Debug.Log("OnStoppedWalking");
+        }
+
+        protected virtual void OnStartedCrouching(EventArgs e)
+        {
+            EventHandler handler = StartedCrouching;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        protected virtual void OnStoppedCrouching(EventArgs e)
+        {
+            EventHandler handler = StoppedCrouching;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        protected virtual void OnStartedRolling(EventArgs e)
+        {
+            EventHandler handler = StartedRolling;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        protected virtual void OnStoppedRolling(EventArgs e)
+        {
+            EventHandler handler = StoppedRolling;
+            if (handler != null)
+                handler(this, e);
+        }
+
+        #endregion
+    }
 }

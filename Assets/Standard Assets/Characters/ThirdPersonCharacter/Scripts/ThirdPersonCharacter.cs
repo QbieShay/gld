@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 namespace UnityStandardAssets.Characters.ThirdPerson
 {
@@ -17,8 +18,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		[SerializeField] float m_MoveSpeedMultiplier = 1f;
 		[SerializeField] float m_AnimSpeedMultiplier = 1f;
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
+        [SerializeField] float m_RollForce = 4;
+        [SerializeField] float m_RollTime = 0.5f;
 
-		Rigidbody m_Rigidbody;
+        Rigidbody m_Rigidbody;
 		Animator m_Animator;
 		bool m_IsGrounded;
 		float m_OrigGroundCheckDistance;
@@ -30,6 +33,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		Vector3 m_CapsuleCenter;
 		CapsuleCollider m_Capsule;
 		bool m_Crouching;
+        bool m_Rolling;
 
 
         public event EventHandler StartedWalking;
@@ -57,34 +61,37 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		}
 
 
-		public void Move(Vector3 move, bool crouch, bool jump)
+		public void Move(Vector3 move, bool crouch, bool jump, bool roll)
 		{
             // ignore jump if it is disabled
             if (!m_JumpEnabled && jump)
                 jump = false;
 
-			// convert the world relative moveInput vector into a local-relative
-			// turn amount and forward amount required to head in the desired
-			// direction.
-			if (move.magnitude > 1f) move.Normalize();
-			move = transform.InverseTransformDirection(move);
-			CheckGroundStatus();
-			move = Vector3.ProjectOnPlane(move, m_GroundNormal);
-			m_TurnAmount = Mathf.Atan2(move.x, move.z);
+            if (!m_Rolling)
+            {
+                // convert the world relative moveInput vector into a local-relative
+                // turn amount and forward amount required to head in the desired
+                // direction.
+                if (move.magnitude > 1f) move.Normalize();
+                move = transform.InverseTransformDirection(move);
+                CheckGroundStatus();
+                move = Vector3.ProjectOnPlane(move, m_GroundNormal);
+                m_TurnAmount = Mathf.Atan2(move.x, move.z);
 
-            if (FloatIsZero(m_ForwardAmount) && !FloatIsZero(move.z))
-                OnStartedWalking(new EventArgs());
-            else if (!FloatIsZero(m_ForwardAmount) && FloatIsZero(move.z))
-                OnStoppedWalking(new EventArgs());
+                if (FloatIsZero(m_ForwardAmount) && !FloatIsZero(move.z))
+                    OnStartedWalking(new EventArgs());
+                else if (!FloatIsZero(m_ForwardAmount) && FloatIsZero(move.z))
+                    OnStoppedWalking(new EventArgs());
 
-			m_ForwardAmount = move.z;
+                m_ForwardAmount = move.z;
 
-			ApplyExtraTurnRotation();
+                ApplyExtraTurnRotation();
+            }
 
 			// control and velocity handling is different when grounded and airborne:
 			if (m_IsGrounded)
 			{
-				HandleGroundedMovement(crouch, jump);
+				HandleGroundedMovement(crouch, jump, roll);
 			}
 			else
 			{
@@ -154,6 +161,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 			{
 				m_Animator.SetFloat("Jump", m_Rigidbody.velocity.y);
 			}
+            m_Animator.SetBool("Rolling", m_Rolling);
 
 			// calculate which leg is behind, so as to leave that leg trailing in the jump animation
 			// (This code is reliant on the specific run cycle offset in our animations,
@@ -191,7 +199,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		}
 
 
-		void HandleGroundedMovement(bool crouch, bool jump)
+		void HandleGroundedMovement(bool crouch, bool jump, bool roll)
 		{
 			// check whether conditions are right to allow a jump:
 			if (jump && !crouch && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
@@ -202,7 +210,37 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				m_Animator.applyRootMotion = false;
 				m_GroundCheckDistance = 0.1f;
 			}
+
+            // check whether condistions are right to allow a roll:
+            if (roll && !m_Rolling && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
+            {
+                // roll!
+                m_Rolling = true;
+                StartCoroutine(Roll());
+            }
 		}
+
+        protected IEnumerator Roll()
+        {
+            // if the character was walking, now he stopped to perform a roll
+            if (!FloatIsZero(m_ForwardAmount))
+            {
+                m_ForwardAmount = 0;
+                OnStoppedWalking(new EventArgs());
+            }
+
+            OnStartedRolling(new EventArgs());
+            float time = 0;
+            while (time < m_RollTime)
+            {
+                m_Rigidbody.AddForce(transform.forward * m_RollForce, ForceMode.Impulse);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_Rigidbody.velocity.y, 0);
+            m_Rolling = false;
+            OnStoppedRolling(new EventArgs());
+        }
 
 		void ApplyExtraTurnRotation()
 		{
@@ -293,6 +331,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             EventHandler handler = StartedRolling;
             if (handler != null)
                 handler(this, e);
+            Debug.Log("OnStartedRolling");
         }
 
         protected virtual void OnStoppedRolling(EventArgs e)
@@ -300,6 +339,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             EventHandler handler = StoppedRolling;
             if (handler != null)
                 handler(this, e);
+            Debug.Log("OnStoppedRolling");
         }
 
         #endregion

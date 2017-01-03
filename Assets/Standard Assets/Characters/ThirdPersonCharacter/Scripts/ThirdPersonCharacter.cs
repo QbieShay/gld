@@ -18,8 +18,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		[SerializeField] float m_MoveSpeedMultiplier = 1f;
 		[SerializeField] float m_AnimSpeedMultiplier = 1f;
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
+        [SerializeField] float m_RollForce = 4;
+        [SerializeField] float m_RollTime = 0.5f;
 
-		Rigidbody m_Rigidbody;
+        Rigidbody m_Rigidbody;
 		Animator m_Animator;
 		bool m_IsGrounded;
 		float m_OrigGroundCheckDistance;
@@ -214,11 +216,11 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             {
                 // roll!
                 m_Rolling = true;
-                StartCoroutine(Roll(2f));
+                StartCoroutine(Roll());
             }
 		}
 
-        protected IEnumerator Roll(float seconds)
+        protected IEnumerator Roll()
         {
             // if the character was walking, now he stopped to perform a roll
             if (!FloatIsZero(m_ForwardAmount))
@@ -229,12 +231,13 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 
             OnStartedRolling(new EventArgs());
             float time = 0;
-            while (time < seconds)
+            while (time < m_RollTime)
             {
-                m_Rigidbody.AddForce(transform.forward * 1, ForceMode.Impulse);
+                m_Rigidbody.AddForce(transform.forward * m_RollForce, ForceMode.Impulse);
                 time += Time.deltaTime;
                 yield return null;
             }
+            m_Rigidbody.velocity = new Vector3(m_Rigidbody.velocity.x, m_Rigidbody.velocity.y, 0);
             m_Rolling = false;
             OnStoppedRolling(new EventArgs());
         }
@@ -328,6 +331,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             EventHandler handler = StartedRolling;
             if (handler != null)
                 handler(this, e);
+            Debug.Log("OnStartedRolling");
         }
 
         protected virtual void OnStoppedRolling(EventArgs e)
@@ -335,6 +339,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             EventHandler handler = StoppedRolling;
             if (handler != null)
                 handler(this, e);
+            Debug.Log("OnStoppedRolling");
         }
 
         #endregion

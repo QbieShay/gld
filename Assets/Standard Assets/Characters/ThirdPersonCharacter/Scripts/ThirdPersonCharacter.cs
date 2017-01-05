@@ -20,6 +20,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		[SerializeField] float m_GroundCheckDistance = 0.1f;
         [SerializeField] float m_RollForce = 4;
         [SerializeField] float m_RollTime = 0.5f;
+        [SerializeField] AudioClip[] m_WhistleSounds;
 
         Rigidbody m_Rigidbody;
 		Animator m_Animator;
@@ -34,6 +35,8 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		CapsuleCollider m_Capsule;
 		bool m_Crouching;
         bool m_Rolling;
+        bool m_Whistle;
+        int m_WhistleSoundsIndex = 0;
 
 
         public event EventHandler StartedWalking;
@@ -61,11 +64,25 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		}
 
 
-		public void Move(Vector3 move, bool crouch, bool jump, bool roll)
+		public void Move(Vector3 move, bool crouch, bool jump, bool roll, bool whistle)
 		{
             // ignore jump if it is disabled
             if (!m_JumpEnabled && jump)
                 jump = false;
+
+            // check if the character can whistle in their current state
+            if (m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded") ||
+                m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Crouching"))
+            {
+                if (whistle && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Whistle"))
+                    m_Whistle = true;
+                else if (!whistle && m_Whistle)
+                    m_Whistle = false;
+            }
+            else
+            {
+                m_Whistle = false;
+            }
 
             if (!m_Rolling)
             {
@@ -162,6 +179,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				m_Animator.SetFloat("Jump", m_Rigidbody.velocity.y);
 			}
             m_Animator.SetBool("Rolling", m_Rolling);
+            m_Animator.SetBool("Whistle", m_Whistle);
 
 			// calculate which leg is behind, so as to leave that leg trailing in the jump animation
 			// (This code is reliant on the specific run cycle offset in our animations,
@@ -274,6 +292,15 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				m_Rigidbody.velocity = v;
 			}
 		}
+
+        public void PlayWhistleSound()
+        {
+            if (m_WhistleSounds.Length > 0)
+            {
+                AudioSource.PlayClipAtPoint(m_WhistleSounds[m_WhistleSoundsIndex], transform.position);
+                m_WhistleSoundsIndex = (m_WhistleSoundsIndex + 1) % m_WhistleSounds.Length;
+            }
+        }
 
         private bool FloatIsZero(float val, float epsilon = 0.001f)
         {

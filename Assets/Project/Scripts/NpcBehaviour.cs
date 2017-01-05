@@ -5,8 +5,9 @@ using UnityEngine;
 public class NpcBehaviour : MonoBehaviour {
 
     public string behaviour;
-	// Use this for initialization
-	void Start ()
+    float timer;
+    // Use this for initialization
+    void Start ()
     {
   
 	}
@@ -14,6 +15,7 @@ public class NpcBehaviour : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
+        timer += Time.deltaTime;
         switch (behaviour)
         {
             case "Melee":
@@ -22,8 +24,12 @@ public class NpcBehaviour : MonoBehaviour {
                 break;
 
             case "Ranged":
-                GetComponent<EnemyAttack>().RangeAttack();
-                break;
+                if (timer >= GetComponentInChildren<RangedWeapon>().timeBetweenBullets)
+                {
+                    GetComponent<EnemyAttack>().RangeAttack();
+                    timer = 0f;
+                }
+                    break;
 
             case "Evade":
                 GetComponent<EnemyEvade>().Evade();

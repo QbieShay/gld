@@ -7,6 +7,7 @@ public class SightCircleManager : MonoBehaviour
 
 	private SpriteRenderer sr;
     public string behaviour;
+    private string previousBehaviour="Search";
     public float scale;
    
 
@@ -26,19 +27,18 @@ public class SightCircleManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" || (other.gameObject.tag == "Bullet" && gameObject.tag == behaviour))
+        {
+            previousBehaviour = GetComponentInParent<NpcBehaviour>().behaviour;
             GetComponentInParent<NpcBehaviour>().behaviour = behaviour;
-
+        }
     }
 
     void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
-            if (GetComponentInParent<NpcBehaviour>().behaviour == "Melee" && behaviour == "Melee")
-                GetComponentInParent<NpcBehaviour>().behaviour = "Ranged";
-            else
-                GetComponentInParent<NpcBehaviour>().behaviour = "Search";
+            GetComponentInParent<NpcBehaviour>().behaviour = previousBehaviour;
         }
 
     }

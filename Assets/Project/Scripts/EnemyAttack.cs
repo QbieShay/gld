@@ -35,7 +35,7 @@ public class EnemyAttack : MonoBehaviour {
         probability = Random.Range(1, diceInitiative);
         if (probability > minimumRoll)
         {
-            Debug.Log("Attack ranged");
+            GetComponentInChildren<RangedWeapon>().Shoot();
         }
 
     }

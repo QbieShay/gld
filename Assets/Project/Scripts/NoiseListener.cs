@@ -1,14 +1,66 @@
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(Collider))]
 
 public class NoiseListener:MonoBehaviour{
-		
-	public float NoiseTreshold;
+	
+	public EventHandler Alert;
 
-	public void ReciveNoise(float intensity){
+	public float noiseTreshold;
+	public float hearing;
+	public float oblivionDelay;
+	public float oblivion;
+
+	Vector3 lastNoisePosition;
+	private float currentAlert=0;
+	private float noiseInLastUpdate=0;
+	private float lastNoiseTime;
+
+	public void ReciveNoise(Vector3 position, float intensity){
 		//TODO handle noise reception here
-		Debug.Log("Recived sound of intensity "+intensity+" in object "+gameObject.name);
+		lastNoisePosition = position;
+		if(intensity > noiseTreshold){
+			noiseInLastUpdate += intensity;
+		}
 	}
 
+	bool forgetting;
+	void Update(){
+		if(noiseInLastUpdate ==0f){
+			forgetting = true;
+		}
+		else{
+			lastNoiseTime = Time.time;
+			forgetting = false;
+		}
+		if(forgetting){
+			if(Time.time - lastNoiseTime >= oblivionDelay && currentAlert >0f){
+				Debug.Log("Forgetting");
+				currentAlert -= Time.deltaTime / oblivion;
+			}
+		}
+		else{
+			Debug.Log("Alarm raising");
+			currentAlert += noiseInLastUpdate* hearing * Time.deltaTime;
+			if(currentAlert > 1f){
+				currentAlert =0f;
+				Debug.Log( "Alerted");
+				if(Alert!=null){
+					Alert(this, new AlertEventArgs(lastNoisePosition));
+				}
+			}
+		}
+		noiseInLastUpdate =0f;
+	}
+
+}
+
+public class AlertEventArgs : EventArgs{
+	
+	public readonly Vector3 sourcePosition;
+	
+	public AlertEventArgs(Vector3 position):base(){
+		sourcePosition = position;
+	}
 }

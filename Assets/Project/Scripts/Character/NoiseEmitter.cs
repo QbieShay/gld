@@ -9,6 +9,7 @@ public class NoiseEmitter : MonoBehaviour{
 	public float MinNoise;
 	public float RollNoise;
 	public float WhistleNoise;
+	public float whistleRadius;
 	public float CrouchNoiseMultiplier;
 	public ThirdPersonCharacter character;
 
@@ -27,7 +28,7 @@ public class NoiseEmitter : MonoBehaviour{
 	}
 
 	public void Whistle(object sender, EventArgs e){
-		EmitSound(WhistleNoise);
+		EmitSound(WhistleNoise,whistleRadius);
 	}
 
 	float GetNoiseRadius(){
@@ -42,22 +43,22 @@ public class NoiseEmitter : MonoBehaviour{
 		currentNoiseMultiplier = 1f;
 	}
 	
-	private void EmitSound(float noise){
-		Collider[] cols= Physics.OverlapSphere(transform.position, GetNoiseRadius());
+	private void EmitSound(float noise, float radius){
+		Collider[] cols= Physics.OverlapSphere(transform.position,radius);
 		foreach (Collider c in cols){
 			float distance = Vector3.Distance(transform.position, 
 					c.gameObject.transform.position);
 			//Roll noise is a fixed value, cannot be cut by stealthing.
-			noise *=GetFalloff(distance);
+			noise *=GetFalloff(distance,radius);
 			NoiseListener listener = c.gameObject.GetComponent<NoiseListener>();
 			if(listener != null){
-				listener.ReciveNoise(noise);
+				listener.ReciveNoise(transform.position, noise);
 			}
 		}
 	}
 
 	public void Rolled(object sender, EventArgs e){
-		EmitSound(RollNoise);	
+		EmitSound(RollNoise, GetNoiseRadius());	
 	}	
 
 	public void BeginWalk(object sender, EventArgs e){
@@ -72,11 +73,11 @@ public class NoiseEmitter : MonoBehaviour{
 		foreach (Collider c in cols){
 			float distance = Vector3.Distance(transform.position, 
 					c.gameObject.transform.position);
-			float noise = MinNoise + (MaxNoise-MinNoise)*GetFalloff(distance);
+			float noise = MinNoise + (MaxNoise-MinNoise)*GetFalloff(distance, GetNoiseRadius());
 			noise *= currentNoiseMultiplier*movingMultiplier;
 			NoiseListener listener = c.gameObject.GetComponent<NoiseListener>();
 			if(listener != null){
-				listener.ReciveNoise(noise);
+				listener.ReciveNoise(transform.position, noise);
 			}
 		}
 
@@ -87,9 +88,9 @@ public class NoiseEmitter : MonoBehaviour{
 		}	
 	}
 
-	float GetFalloff(float distance){
+	float GetFalloff(float distance, float noiseRadius){
 		//We're testing against the root of the objects, gh
-		return Mathf.Clamp(1f-(distance/GetNoiseRadius()),0f,1f);
+		return Mathf.Clamp(1f-(distance/noiseRadius),0f,1f);
 
 	}
 }

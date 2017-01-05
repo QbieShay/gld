@@ -45,6 +45,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         public event EventHandler StoppedCrouching;
         public event EventHandler StartedRolling;
         public event EventHandler StoppedRolling;
+        public event EventHandler Whistled;
 
         public float CurrentSpeed
         {
@@ -75,7 +76,10 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Crouching"))
             {
                 if (whistle && !m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Whistle"))
+                {
                     m_Whistle = true;
+                    OnWhistled(new EventArgs());
+                }
                 else if (!whistle && m_Whistle)
                     m_Whistle = false;
             }
@@ -379,6 +383,14 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             if (handler != null)
                 handler(this, e);
             Debug.Log("OnStoppedRolling");
+        }
+
+        protected virtual void OnWhistled(EventArgs e)
+        {
+            EventHandler handler = Whistled;
+            if (handler != null)
+                handler(this, e);
+            Debug.Log("Whistled");
         }
 
         #endregion

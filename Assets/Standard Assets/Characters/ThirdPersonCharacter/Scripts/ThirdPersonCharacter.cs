@@ -229,6 +229,18 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 OnStoppedWalking(new EventArgs());
             }
 
+            // if input present, rotate towards input direction
+            Vector2 input = new Vector2(
+                CrossPlatformInput.CrossPlatformInputManager.GetAxis("Horizontal"),
+                CrossPlatformInput.CrossPlatformInputManager.GetAxis("Vertical"));
+            if (input != Vector2.zero)
+            {
+                float angle = input.y >= 0 ? Vector2.Angle(Vector2.right, input) : 360 - Vector2.Angle(Vector2.right, input);
+                angle = (360 - angle) % 360; // convert angle to increment clockwise, instead of counter-clockwise
+                angle = (angle + 90) % 360; // when our model faces positive Z-axis, its angle is zero
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, angle, transform.eulerAngles.z);
+            }
+
             OnStartedRolling(new EventArgs());
             float time = 0;
             while (time < m_RollTime)

@@ -23,6 +23,7 @@ public class NoiseListener:MonoBehaviour{
 		if(intensity > noiseTreshold){
 			noiseInLastUpdate += intensity;
 		}
+        //Debug.Log("Noise intensity: " + intensity);
 	}
 
 	bool forgetting;
@@ -42,7 +43,7 @@ public class NoiseListener:MonoBehaviour{
 		}
 		else{
 			Debug.Log("Alarm raising");
-			currentAlert += noiseInLastUpdate* hearing * Time.deltaTime;
+			currentAlert += noiseInLastUpdate / hearing * Time.deltaTime;
 			if(currentAlert > 1f){
 				currentAlert =0f;
 				Debug.Log( "Alerted");

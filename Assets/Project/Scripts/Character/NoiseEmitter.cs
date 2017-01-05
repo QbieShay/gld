@@ -8,6 +8,7 @@ public class NoiseEmitter : MonoBehaviour{
 	public float MaxNoise;
 	public float MinNoise;
 	public float RollNoise;
+	public float WhistleNoise;
 	public float CrouchNoiseMultiplier;
 	public ThirdPersonCharacter character;
 
@@ -21,7 +22,12 @@ public class NoiseEmitter : MonoBehaviour{
 		character.StoppedWalking += EndWalk;
 		character.StartedRolling += EndWalk;
 		character.StoppedRolling += Rolled;
+		character.Whistled += Whistle;
 
+	}
+
+	public void Whistle(object sender, EventArgs e){
+		EmitSound(WhistleNoise);
 	}
 
 	float GetNoiseRadius(){
@@ -36,18 +42,22 @@ public class NoiseEmitter : MonoBehaviour{
 		currentNoiseMultiplier = 1f;
 	}
 	
-	public void Rolled(object sender, EventArgs e){
+	private void EmitSound(float noise){
 		Collider[] cols= Physics.OverlapSphere(transform.position, GetNoiseRadius());
 		foreach (Collider c in cols){
 			float distance = Vector3.Distance(transform.position, 
 					c.gameObject.transform.position);
 			//Roll noise is a fixed value, cannot be cut by stealthing.
-			float noise = RollNoise*GetFalloff(distance);
+			noise *=GetFalloff(distance);
 			NoiseListener listener = c.gameObject.GetComponent<NoiseListener>();
 			if(listener != null){
 				listener.ReciveNoise(noise);
 			}
 		}
+	}
+
+	public void Rolled(object sender, EventArgs e){
+		EmitSound(RollNoise);	
 	}	
 
 	public void BeginWalk(object sender, EventArgs e){
@@ -57,7 +67,7 @@ public class NoiseEmitter : MonoBehaviour{
 		movingMultiplier = 0f;
 	}
 
-	void Update(){
+	void EmitWalkNoise(){
 		Collider[] cols= Physics.OverlapSphere(transform.position, GetNoiseRadius());
 		foreach (Collider c in cols){
 			float distance = Vector3.Distance(transform.position, 
@@ -69,6 +79,12 @@ public class NoiseEmitter : MonoBehaviour{
 				listener.ReciveNoise(noise);
 			}
 		}
+
+	}
+	void Update(){
+		if(movingMultiplier>0){
+			EmitWalkNoise();
+		}	
 	}
 
 	float GetFalloff(float distance){

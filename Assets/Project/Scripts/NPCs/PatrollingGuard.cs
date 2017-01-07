@@ -29,10 +29,12 @@ public class PatrollingGuard : MonoBehaviour
     private bool waitTimeEnded = false;
 
     private CharacterController characterController;
+    private Animator animator;
 
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
         InitStateMachine();
     }
 
@@ -42,7 +44,7 @@ public class PatrollingGuard : MonoBehaviour
 
         // "Patrol" sub-state machine
         State stateGoTowardsNextWaypoint = new State("Go towards next waypoint",
-            ActionStartMovingTowardsWaypoint, ActionMoveTowardsWaypoint, null);
+            ActionStartMovingTowardsWaypoint, ActionMoveTowardsWaypoint, ActionStopMovingTowardsWaypoint);
         State stateWait = new State("Wait", ActionWait, null, ActionSetNextWaypoint);
         StateMachine statePatrol = new StateMachine("Patrol", stateGoTowardsNextWaypoint, null, null, null);
         stateGoTowardsNextWaypoint.TopLevel = statePatrol;
@@ -216,6 +218,7 @@ public class PatrollingGuard : MonoBehaviour
     private void ActionStartMovingTowardsWaypoint()
     {
         currentDestination = path[pathIndex].waypoint.position;
+        animator.SetFloat("Forward", 0.5f);
     }
 
     private void ActionMoveTowardsWaypoint()
@@ -224,6 +227,11 @@ public class PatrollingGuard : MonoBehaviour
         lookPos.y = 0;
         transform.rotation = Quaternion.LookRotation(lookPos);
         characterController.SimpleMove(transform.forward * walkingSpeed);
+    }
+
+    private void ActionStopMovingTowardsWaypoint()
+    {
+        animator.SetFloat("Forward", 0);
     }
 
     private void ActionWait()

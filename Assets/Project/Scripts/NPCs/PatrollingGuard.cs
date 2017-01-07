@@ -220,7 +220,9 @@ public class PatrollingGuard : MonoBehaviour
 
     private void ActionMoveTowardsWaypoint()
     {
-        transform.LookAt(currentDestination);
+        Vector3 lookPos = currentDestination - transform.position;
+        lookPos.y = 0;
+        transform.rotation = Quaternion.LookRotation(lookPos);
         characterController.SimpleMove(transform.forward * walkingSpeed);
     }
 

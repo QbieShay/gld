@@ -35,6 +35,16 @@ public class PatrollingGuard : MonoBehaviour
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+
+        currentDestination = transform.position;
+        // if there are no waypoints, automatically add one at NPC's position
+        if (path.Length == 0)
+        {
+            GameObject wp = new GameObject("Waypoint (Patrolling Guard's position)");
+            wp.transform.position = transform.position;
+            path = new WaypointTime[1] { new WaypointTime(wp.transform, 0) };
+        }
+
         InitStateMachine();
     }
 
@@ -218,7 +228,6 @@ public class PatrollingGuard : MonoBehaviour
     private void ActionStartMovingTowardsWaypoint()
     {
         currentDestination = path[pathIndex].waypoint.position;
-        animator.SetFloat("Forward", 0.5f);
     }
 
     private void ActionMoveTowardsWaypoint()
@@ -227,6 +236,8 @@ public class PatrollingGuard : MonoBehaviour
         lookPos.y = 0;
         transform.rotation = Quaternion.LookRotation(lookPos);
         characterController.SimpleMove(transform.forward * walkingSpeed);
+        if (animator.GetFloat("Forward") < 0.5f)
+            animator.SetFloat("Forward", 0.5f);
     }
 
     private void ActionStopMovingTowardsWaypoint()

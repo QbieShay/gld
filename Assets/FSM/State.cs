@@ -35,16 +35,24 @@ namespace FSM
             set { topLevel = value; }
         }
 
+        public string FullyQualifiedName
+        {
+            get
+            {
+                string fullyQualifiedName = Name;
+                State parent = TopLevel;
+                while (parent != null)
+                {
+                    fullyQualifiedName = parent.Name + "." + fullyQualifiedName;
+                    parent = parent.TopLevel;
+                }
+                return fullyQualifiedName;
+            }
+        }
+
         public override string ToString()
         {
-            string fullyQualifiedName = Name;
-            State parent = TopLevel;
-            while (parent != null)
-            {
-                fullyQualifiedName = parent.Name + "." + fullyQualifiedName;
-                parent = parent.TopLevel;
-            }
-            return fullyQualifiedName;
+            return Name;
         }
     }
 }

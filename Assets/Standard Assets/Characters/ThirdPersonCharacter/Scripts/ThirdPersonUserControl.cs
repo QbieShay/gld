@@ -14,6 +14,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         private bool m_Jump;                      // the world-relative desired move direction, calculated from the camForward and user input.
         private bool m_Roll;
         private bool m_Whistle;
+        private bool m_PutKo;
 
         
         private void Start()
@@ -51,6 +52,11 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             {
                 m_Whistle = CrossPlatformInputManager.GetButtonDown("Whistle");
             }
+
+            if (!m_PutKo)
+            {
+                m_PutKo = CrossPlatformInputManager.GetButtonDown("PutKo");
+            }
         }
 
 
@@ -80,10 +86,11 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 #endif
 
             // pass all parameters to the character control script
-            m_Character.Move(m_Move, crouch, m_Jump, m_Roll, m_Whistle);
+            m_Character.Move(m_Move, crouch, m_Jump, m_Roll, m_Whistle, m_PutKo);
             m_Jump = false;
             m_Roll = false;
             m_Whistle = false;
+            m_PutKo = false;
         }
     }
 }

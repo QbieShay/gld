@@ -262,4 +262,14 @@ public class PatrollingGuard : MonoBehaviour
         yield return new WaitForSeconds(path[pathIndex].waitingTime);
         waitTimeEnded = true;
     }
+
+    public void PutKo()
+    {
+
+    }
+
+    public void Kill()
+    {
+
+    }
 }

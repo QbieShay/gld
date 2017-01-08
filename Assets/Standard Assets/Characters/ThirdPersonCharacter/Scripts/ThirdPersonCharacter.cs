@@ -37,6 +37,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
         bool m_Rolling;
         bool m_Whistle;
         int m_WhistleSoundsIndex = 0;
+        bool m_BehindTrigger = false;
 
 
         public event EventHandler StartedWalking;
@@ -65,7 +66,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 		}
 
 
-		public void Move(Vector3 move, bool crouch, bool jump, bool roll, bool whistle)
+		public void Move(Vector3 move, bool crouch, bool jump, bool roll, bool whistle, bool putKo)
 		{
             // ignore jump if it is disabled
             if (!m_JumpEnabled && jump)
@@ -107,6 +108,15 @@ namespace UnityStandardAssets.Characters.ThirdPerson
                 m_ForwardAmount = move.z;
 
                 ApplyExtraTurnRotation();
+            }
+
+            // take a NPC from behind
+            if (m_BehindTrigger)
+            {
+                if (putKo)
+                {
+
+                }
             }
 
 			// control and velocity handling is different when grounded and airborne:
@@ -334,6 +344,24 @@ namespace UnityStandardAssets.Characters.ThirdPerson
 				m_Animator.applyRootMotion = false;
 			}
 		}
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.tag == "BehindTrigger")
+            {
+                if (!m_BehindTrigger)
+                    m_BehindTrigger = true;
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.tag == "BehindTrigger")
+            {
+                if (m_BehindTrigger)
+                    m_BehindTrigger = false;
+            }
+        }
 
         #region Events
 

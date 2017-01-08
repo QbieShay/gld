@@ -1,6 +1,5 @@
 using UnityEngine;
 using System;
-using UnityStandardAssets.Characters.ThirdPerson;
 
 public class NoiseEmitter : MonoBehaviour{
 
@@ -11,7 +10,7 @@ public class NoiseEmitter : MonoBehaviour{
 	public float WhistleNoise;
 	public float whistleRadius;
 	public float CrouchNoiseMultiplier;
-	public ThirdPersonCharacter character;
+	public StealthCharacter character;
 
 	float currentNoiseMultiplier=1f;
 	float movingMultiplier=1f;

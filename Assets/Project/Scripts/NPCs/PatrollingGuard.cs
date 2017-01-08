@@ -22,11 +22,13 @@ public class PatrollingGuard : MonoBehaviour
     public WaypointTime[] path;
     public float walkingSpeed;
     public float waypointReachedThreshold = 0.1f;
+    public GameObject spawnOnKo;
 
     private int pathIndex = 0;
     private Vector3 currentDestination;
     private StateMachine stateMachine;
     private bool waitTimeEnded = false;
+    private bool putKo = false;
 
     private CharacterController characterController;
     private Animator animator;
@@ -83,7 +85,7 @@ public class PatrollingGuard : MonoBehaviour
         State stateUnderMindTrickAttempt = new State("Under Mind Trick attempt", null, null, null);
         State stateSpot = new State("Spot", null, null, null);
         State stateGiveAlarm = new State("Give alarm", null, null, null);
-        State stateKo = new State("KO", null, null, null);
+        State stateKo = new State("KO", ActionPutKo, null, null);
         State stateDead = new State("Dead", null, null, null);
         stateMachine = new StateMachine("State Machine", stateAlive, null, null, null);
         stateUnderMindTrickAttempt.TopLevel = stateMachine;
@@ -132,7 +134,7 @@ public class PatrollingGuard : MonoBehaviour
 
     private void StateMachine_StateChanged(object sender, StateChangedEventArgs e)
     {
-        Debug.Log((sender as StateMachine).Name + " changed state FROM " + e.Transition.FromState + " TO " + e.Transition.ToState);
+        //Debug.Log((sender as StateMachine).Name + " changed state FROM " + e.Transition.FromState + " TO " + e.Transition.ToState);
     }
 
     private void Update()
@@ -193,7 +195,7 @@ public class PatrollingGuard : MonoBehaviour
 
     private bool ConditionPutKo()
     {
-        return false;
+        return putKo;
     }
 
     private bool ConditionKilled()
@@ -255,6 +257,11 @@ public class PatrollingGuard : MonoBehaviour
         pathIndex = (pathIndex + 1) % path.Length;
     }
 
+    private void ActionPutKo()
+    {
+        Debug.Log("Patrolling Guard put KO!");
+    }
+
     #endregion
 
     private IEnumerator WaitForSeconds()
@@ -265,7 +272,11 @@ public class PatrollingGuard : MonoBehaviour
 
     public void PutKo()
     {
-
+        putKo = true;
+        GameObject go = Instantiate(spawnOnKo);
+        go.transform.position = transform.position;
+        go.transform.rotation = transform.rotation;
+        Destroy(gameObject);
     }
 
     public void Kill()

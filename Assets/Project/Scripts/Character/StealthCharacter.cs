@@ -35,8 +35,8 @@ public class StealthCharacter : MonoBehaviour
     bool m_Rolling;
     bool m_Whistle;
     int m_WhistleSoundsIndex = 0;
-    bool m_BehindTrigger = false;
-
+    PatrollingGuard m_Guard; // the Patrolling Guard in whose trigger we are inside
+    bool m_PutKo = false;
 
     public event EventHandler StartedWalking;
     public event EventHandler StoppedWalking;
@@ -109,11 +109,12 @@ public class StealthCharacter : MonoBehaviour
         }
 
         // take a NPC from behind
-        if (m_BehindTrigger)
+        if (m_Guard != null)
         {
             if (putKo)
             {
-
+                m_Guard.PutKo();
+                m_PutKo = true;
             }
         }
 
@@ -132,6 +133,8 @@ public class StealthCharacter : MonoBehaviour
 
 		// send input and other state parameters to the animator
 		UpdateAnimator(move);
+
+        m_PutKo = false;
 	}
 
 
@@ -192,11 +195,12 @@ public class StealthCharacter : MonoBehaviour
 		}
         m_Animator.SetBool("Rolling", m_Rolling);
         m_Animator.SetBool("Whistle", m_Whistle);
+        m_Animator.SetBool("PutKo", m_PutKo);
 
-		// calculate which leg is behind, so as to leave that leg trailing in the jump animation
-		// (This code is reliant on the specific run cycle offset in our animations,
-		// and assumes one leg passes the other at the normalized clip times of 0.0 and 0.5)
-		float runCycle =
+        // calculate which leg is behind, so as to leave that leg trailing in the jump animation
+        // (This code is reliant on the specific run cycle offset in our animations,
+        // and assumes one leg passes the other at the normalized clip times of 0.0 and 0.5)
+        float runCycle =
 			Mathf.Repeat(
 				m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime + m_RunCycleLegOffset, 1);
 		float jumpLeg = (runCycle < k_Half ? 1 : -1) * m_ForwardAmount;
@@ -347,8 +351,8 @@ public class StealthCharacter : MonoBehaviour
     {
         if (other.tag == "BehindTrigger")
         {
-            if (!m_BehindTrigger)
-                m_BehindTrigger = true;
+            if (m_Guard == null)
+                m_Guard = other.GetComponentInParent<PatrollingGuard>();
         }
     }
 
@@ -356,8 +360,8 @@ public class StealthCharacter : MonoBehaviour
     {
         if (other.tag == "BehindTrigger")
         {
-            if (m_BehindTrigger)
-                m_BehindTrigger = false;
+            if (m_Guard != null)
+                m_Guard = null;
         }
     }
 

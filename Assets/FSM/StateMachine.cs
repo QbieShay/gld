@@ -80,7 +80,7 @@ namespace FSM
                 if (CurrentState.GetType() == typeof(StateMachine))
                 {
                     StateMachine currentStateMachine = CurrentState as StateMachine;
-                    actions = (List<Action>)(currentStateMachine.CurrentState as StateMachine).Update();
+                    actions = (List<Action>)(currentStateMachine as StateMachine).Update();
                 }
             }
 

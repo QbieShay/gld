@@ -37,12 +37,12 @@ public class NoiseListener:MonoBehaviour{
 		}
 		if(forgetting){
 			if(Time.time - lastNoiseTime >= oblivionDelay && currentAlert >0f){
-				Debug.Log("Forgetting");
+				//Debug.Log("Forgetting");
 				currentAlert -= Time.deltaTime / oblivion;
 			}
 		}
 		else{
-			Debug.Log("Alarm raising");
+			//Debug.Log("Alarm raising");
 			currentAlert += noiseInLastUpdate / hearing * Time.deltaTime;
 			if(currentAlert > 1f){
 				currentAlert =0f;

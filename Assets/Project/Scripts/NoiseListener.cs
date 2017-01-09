@@ -23,7 +23,7 @@ public class NoiseListener:MonoBehaviour{
 		if(intensity > noiseTreshold){
 			noiseInLastUpdate += intensity;
 		}
-        //Debug.Log("Noise intensity: " + intensity);
+        Debug.Log("Noise intensity: " + intensity);
 	}
 
 	public void ReciveNoiseOnce(Vector3 position,float intensity){
@@ -33,6 +33,7 @@ public class NoiseListener:MonoBehaviour{
 
 	bool forgetting;
 	void Update(){
+		Debug.Log(currentAlert);
 		if(noiseInLastUpdate ==0f){
 			forgetting = true;
 		}

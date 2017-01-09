@@ -27,7 +27,7 @@ public class NoiseEmitter : MonoBehaviour{
 	}
 
 	public void Whistle(object sender, EventArgs e){
-		EmitSound(WhistleNoise,whistleRadius);
+		EmitSoundOnce(WhistleNoise,whistleRadius);
 	}
 
 	float GetNoiseRadius(){
@@ -42,7 +42,7 @@ public class NoiseEmitter : MonoBehaviour{
 		currentNoiseMultiplier = 1f;
 	}
 	
-	private void EmitSound(float noise, float radius){
+	private void EmitSoundOnce(float noise, float radius){
 		Collider[] cols= Physics.OverlapSphere(transform.position,radius);
 		foreach (Collider c in cols){
 			float distance = Vector3.Distance(transform.position, 
@@ -51,13 +51,13 @@ public class NoiseEmitter : MonoBehaviour{
 			noise *=GetFalloff(distance,radius);
 			NoiseListener listener = c.gameObject.GetComponent<NoiseListener>();
 			if(listener != null){
-				listener.ReciveNoise(transform.position, noise);
+				listener.ReciveNoiseOnce(transform.position, noise);
 			}
 		}
 	}
 
 	public void Rolled(object sender, EventArgs e){
-		EmitSound(RollNoise, GetNoiseRadius());	
+		EmitSoundOnce(RollNoise, GetNoiseRadius());	
 	}	
 
 	public void BeginWalk(object sender, EventArgs e){

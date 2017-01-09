@@ -26,6 +26,10 @@ public class NoiseListener:MonoBehaviour{
         //Debug.Log("Noise intensity: " + intensity);
 	}
 
+	public void ReciveNoiseOnce(Vector3 position,float intensity){
+		currentAlert += intensity/hearing;
+	}
+
 	bool forgetting;
 	void Update(){
 		if(noiseInLastUpdate ==0f){

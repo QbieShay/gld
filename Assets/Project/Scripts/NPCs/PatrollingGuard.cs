@@ -23,6 +23,7 @@ public class PatrollingGuard : MonoBehaviour
     public float walkingSpeed;
     public float waypointReachedThreshold = 0.1f;
     public GameObject spawnOnDefeated;
+    public float lookCarefullyDuration = 3;
 
     private int pathIndex = 0;
     private Vector3 currentDestination;
@@ -32,6 +33,7 @@ public class PatrollingGuard : MonoBehaviour
     private bool killed = false;
     private bool alerted = false;
     private Vector3 noiseSourcePosition;
+    private bool lookCarefullyTimeEnded = false;
 
     private CharacterController characterController;
     private Animator animator;
@@ -77,7 +79,7 @@ public class PatrollingGuard : MonoBehaviour
 
         // "Check" sub-state machine
         State stateGoTowardsNoiseSource = new State("Go towards noise source", ActionStartMovingTowardsNoiseSource, ActionMoveTowardsNoiseSource, null);
-        State stateLookCarefully = new State("Look carefully", null, null, null);
+        State stateLookCarefully = new State("Look carefully", ActionStartLookingCarefully, null, null);
         StateMachine stateCheck = new StateMachine("Check", stateGoTowardsNoiseSource, null, null, null);
         stateGoTowardsNoiseSource.TopLevel = stateCheck;
         stateLookCarefully.TopLevel = stateCheck;
@@ -197,6 +199,11 @@ public class PatrollingGuard : MonoBehaviour
 
     private bool ConditionLookTimeEnded()
     {
+        if (lookCarefullyTimeEnded)
+        {
+            lookCarefullyTimeEnded = false;
+            return true;
+        }
         return false;
     }
 
@@ -336,6 +343,30 @@ public class PatrollingGuard : MonoBehaviour
         characterController.SimpleMove(transform.forward * walkingSpeed);
     }
 
+    private void ActionStartLookingCarefully()
+    {
+        lookCarefullyTimeEnded = false;
+        StartCoroutine(LookCarefully());
+    }
+
+    #endregion
+
+    private IEnumerator WaitForSeconds()
+    {
+        yield return new WaitForSeconds(path[pathIndex].waitingTime);
+        waitTimeEnded = true;
+    }
+
+    public void PutKo()
+    {
+        putKo = true;
+    }
+
+    public void Kill()
+    {
+        killed = true;
+    }
+
     /// <summary>
     /// Checks with raycasts for colliders in the "Walls" layer in the given direction.
     /// 5 rays are cast, in the following order: very left/right, slightly left/right, center.
@@ -404,21 +435,15 @@ public class PatrollingGuard : MonoBehaviour
         return null;
     }
 
-    #endregion
-
-    private IEnumerator WaitForSeconds()
+    private IEnumerator LookCarefully()
     {
-        yield return new WaitForSeconds(path[pathIndex].waitingTime);
-        waitTimeEnded = true;
-    }
+        float time = 0;
+        while (time < lookCarefullyDuration)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
 
-    public void PutKo()
-    {
-        putKo = true;
-    }
-
-    public void Kill()
-    {
-        killed = true;
+        lookCarefullyTimeEnded = true;
     }
 }

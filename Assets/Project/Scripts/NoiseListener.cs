@@ -5,7 +5,7 @@ using System;
 
 public class NoiseListener:MonoBehaviour{
 	
-	public EventHandler Alert;
+	public event EventHandler<AlertEventArgs> Alert;
 
 	public float noiseTreshold;
 	public float hearing;

@@ -20,7 +20,7 @@ namespace FSM
 
         public override string ToString()
         {
-            return "FROM " + FromState + " TO " + ToState;
+            return Condition.Method.Name;
         }
     }
 }

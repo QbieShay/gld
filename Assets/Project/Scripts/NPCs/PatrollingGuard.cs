@@ -22,6 +22,8 @@ public class PatrollingGuard : MonoBehaviour
     public WaypointTime[] path;
     public float walkingSpeed;
     public float waypointReachedThreshold = 0.1f;
+    public float steeringMax = 30;
+    public float steeringMin = 10;
     public GameObject spawnOnDefeated;
     public float lookCarefullyDuration = 3;
 
@@ -142,11 +144,11 @@ public class PatrollingGuard : MonoBehaviour
         stateUnderMindTrickAttempt.Transitions.Add(new Transition(stateUnderMindTrickAttempt, stateSpot, ConditionPlayerFailsMindTrick, null));
         stateMindTricked.Transitions.Add(new Transition(stateMindTricked, stateGoTowardsNextWaypoint, ConditionMindTrickTimeOver, null));
 
-        //stateMachine.StateChanged += StateMachine_StateChanged;
+        stateMachine.StateChanged += StateMachine_StateChanged;
         stateAlive.StateChanged += StateMachine_StateChanged;
-        //statePatrol.StateChanged += StateMachine_StateChanged;
-        //stateCheck.StateChanged += StateMachine_StateChanged;
-        //stateMindTricked.StateChanged += StateMachine_StateChanged;
+        statePatrol.StateChanged += StateMachine_StateChanged;
+        stateCheck.StateChanged += StateMachine_StateChanged;
+        stateMindTricked.StateChanged += StateMachine_StateChanged;
     }
 
     private void StateMachine_StateChanged(object sender, StateChangedEventArgs e)
@@ -259,16 +261,14 @@ public class PatrollingGuard : MonoBehaviour
     private void ActionStartMovingTowardsWaypoint()
     {
         currentDestination = path[pathIndex].waypoint.position;
+        Vector3 lookPos = currentDestination - transform.position;
+        lookPos.y = 0;
+        transform.rotation = Quaternion.LookRotation(lookPos);
     }
 
     private void ActionMoveTowardsWaypoint()
     {
-        Vector3 lookPos = currentDestination - transform.position;
-        lookPos.y = 0;
-        transform.rotation = Quaternion.LookRotation(lookPos);
-        characterController.SimpleMove(transform.forward * walkingSpeed);
-        if (animator.GetFloat("Forward") < 0.5f)
-            animator.SetFloat("Forward", 0.5f);
+        MoveTowardsPointAvoidingObstacles(currentDestination);        
     }
 
     private void ActionStopMovingTowardsWaypoint()
@@ -317,30 +317,7 @@ public class PatrollingGuard : MonoBehaviour
 
     private void ActionMoveTowardsNoiseSource()
     {
-        Vector3 destDirection = noiseSourcePosition - transform.position;
-        destDirection.y = 0;
-        destDirection.Normalize();
-        int? hit = CheckForWalls(destDirection);
-        if (hit != null)
-        {
-            float rotation = 0;
-            if (hit == -2)
-                rotation = 5;
-            else if (hit == -1 || hit == 0)
-                rotation = 2;
-            else if (hit == 1)
-                rotation = -2;
-            else if (hit == 2)
-                rotation = -5;
-            transform.Rotate(new Vector3(0, rotation * Time.deltaTime, 0));
-        }
-        else
-        {
-            Vector3 lookPos = noiseSourcePosition - transform.position;
-            lookPos.y = 0;
-            transform.rotation = Quaternion.LookRotation(lookPos);
-        }
-        characterController.SimpleMove(transform.forward * walkingSpeed);
+        MoveTowardsPointAvoidingObstacles(noiseSourcePosition);
     }
 
     private void ActionStartLookingCarefully()
@@ -433,6 +410,36 @@ public class PatrollingGuard : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void MoveTowardsPointAvoidingObstacles(Vector3 destination)
+    {
+        Vector3 destDirection = destination - transform.position;
+        destDirection.y = 0;
+        destDirection.Normalize();
+        int? hit = CheckForWalls(destDirection);
+        if (hit != null)
+        {
+            float rotation = 0;
+            if (hit == -2)
+                rotation = steeringMax;
+            else if (hit == -1 || hit == 0)
+                rotation = steeringMin;
+            else if (hit == 1)
+                rotation = -steeringMin;
+            else if (hit == 2)
+                rotation = -steeringMax;
+            transform.Rotate(new Vector3(0, rotation * Time.deltaTime, 0));
+        }
+        else
+        {
+            Vector3 lookPos = destination - transform.position;
+            lookPos.y = 0;
+            transform.rotation = Quaternion.LookRotation(lookPos);
+        }
+        characterController.SimpleMove(transform.forward * walkingSpeed);
+        if (animator.GetFloat("Forward") < 0.5f)
+            animator.SetFloat("Forward", 0.5f);
     }
 
     private IEnumerator LookCarefully()

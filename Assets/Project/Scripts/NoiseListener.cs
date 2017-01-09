@@ -28,6 +28,7 @@ public class NoiseListener:MonoBehaviour{
 
 	public void ReciveNoiseOnce(Vector3 position,float intensity){
 		currentAlert += intensity/hearing;
+		noiseInLastUpdate += 0.01f;
 	}
 
 	bool forgetting;

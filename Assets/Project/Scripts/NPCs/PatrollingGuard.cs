@@ -22,13 +22,14 @@ public class PatrollingGuard : MonoBehaviour
     public WaypointTime[] path;
     public float walkingSpeed;
     public float waypointReachedThreshold = 0.1f;
-    public GameObject spawnOnKo;
+    public GameObject spawnOnDefeated;
 
     private int pathIndex = 0;
     private Vector3 currentDestination;
     private StateMachine stateMachine;
     private bool waitTimeEnded = false;
     private bool putKo = false;
+    private bool killed = false;
 
     private CharacterController characterController;
     private Animator animator;
@@ -86,7 +87,7 @@ public class PatrollingGuard : MonoBehaviour
         State stateSpot = new State("Spot", null, null, null);
         State stateGiveAlarm = new State("Give alarm", null, null, null);
         State stateKo = new State("KO", ActionPutKo, null, null);
-        State stateDead = new State("Dead", null, null, null);
+        State stateDead = new State("Dead", ActionDie, null, null);
         stateMachine = new StateMachine("State Machine", stateAlive, null, null, null);
         stateUnderMindTrickAttempt.TopLevel = stateMachine;
         stateSpot.TopLevel = stateMachine;
@@ -200,7 +201,7 @@ public class PatrollingGuard : MonoBehaviour
 
     private bool ConditionKilled()
     {
-        return false;
+        return killed;
     }
 
     private bool ConditionPlayerTriesMindTrick()
@@ -259,7 +260,22 @@ public class PatrollingGuard : MonoBehaviour
 
     private void ActionPutKo()
     {
+        GameObject go = Instantiate(spawnOnDefeated);
+        go.transform.position = transform.position;
+        go.transform.rotation = transform.rotation;
+        go.GetComponent<Animator>().SetBool("Ko", true);
+        Destroy(gameObject);
         Debug.Log("Patrolling Guard put KO!");
+    }
+
+    private void ActionDie()
+    {
+        GameObject go = Instantiate(spawnOnDefeated);
+        go.transform.position = transform.position;
+        go.transform.rotation = transform.rotation;
+        go.GetComponent<Animator>().SetBool("Dead", true);
+        Destroy(gameObject);
+        Debug.Log("Patrolling Guard killed!");
     }
 
     #endregion
@@ -273,14 +289,10 @@ public class PatrollingGuard : MonoBehaviour
     public void PutKo()
     {
         putKo = true;
-        GameObject go = Instantiate(spawnOnKo);
-        go.transform.position = transform.position;
-        go.transform.rotation = transform.rotation;
-        Destroy(gameObject);
     }
 
     public void Kill()
     {
-
+        killed = true;
     }
 }

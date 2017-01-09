@@ -37,6 +37,7 @@ public class StealthCharacter : MonoBehaviour
     int m_WhistleSoundsIndex = 0;
     PatrollingGuard m_Guard; // the Patrolling Guard in whose trigger we are inside
     bool m_PutKo = false;
+    bool m_Kill = false;
 
     public event EventHandler StartedWalking;
     public event EventHandler StoppedWalking;
@@ -64,7 +65,7 @@ public class StealthCharacter : MonoBehaviour
 	}
 
 
-	public void Move(Vector3 move, bool crouch, bool jump, bool roll, bool whistle, bool putKo)
+	public void Move(Vector3 move, bool crouch, bool jump, bool roll, bool whistle, bool putKo, bool kill)
 	{
         // ignore jump if it is disabled
         if (!m_JumpEnabled && jump)
@@ -116,6 +117,11 @@ public class StealthCharacter : MonoBehaviour
                 m_Guard.PutKo();
                 m_PutKo = true;
             }
+            else if (kill)
+            {
+                m_Guard.Kill();
+                m_Kill = true;
+            }
         }
 
 		// control and velocity handling is different when grounded and airborne:
@@ -135,6 +141,7 @@ public class StealthCharacter : MonoBehaviour
 		UpdateAnimator(move);
 
         m_PutKo = false;
+        m_Kill = false;
 	}
 
 

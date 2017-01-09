@@ -264,8 +264,9 @@ public class PatrollingGuard : MonoBehaviour
         go.transform.position = transform.position;
         go.transform.rotation = transform.rotation;
         go.GetComponent<Animator>().SetBool("Ko", true);
-        Destroy(gameObject);
         Debug.Log("Patrolling Guard put KO!");
+
+        Destroy(gameObject);
     }
 
     private void ActionDie()
@@ -274,8 +275,9 @@ public class PatrollingGuard : MonoBehaviour
         go.transform.position = transform.position;
         go.transform.rotation = transform.rotation;
         go.GetComponent<Animator>().SetBool("Dead", true);
-        Destroy(gameObject);
         Debug.Log("Patrolling Guard killed!");
+
+        Destroy(gameObject);
     }
 
     #endregion

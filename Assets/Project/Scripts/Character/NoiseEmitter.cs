@@ -23,6 +23,7 @@ public class NoiseEmitter : MonoBehaviour{
 		character.StartedRolling += EndWalk;
 		character.StoppedRolling += Rolled;
 		character.Whistled += Whistle;
+		EndWalk( null, null);
 
 	}
 

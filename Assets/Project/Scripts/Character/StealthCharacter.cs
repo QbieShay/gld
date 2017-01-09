@@ -203,6 +203,7 @@ public class StealthCharacter : MonoBehaviour
         m_Animator.SetBool("Rolling", m_Rolling);
         m_Animator.SetBool("Whistle", m_Whistle);
         m_Animator.SetBool("PutKo", m_PutKo);
+        m_Animator.SetBool("Kill", m_Kill);
 
         // calculate which leg is behind, so as to leave that leg trailing in the jump animation
         // (This code is reliant on the specific run cycle offset in our animations,

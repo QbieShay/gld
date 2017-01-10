@@ -22,8 +22,10 @@ public class PatrollingGuard : MonoBehaviour
     public WaypointTime[] path;
     public float walkingSpeed;
     public float waypointReachedThreshold = 0.1f;
-    public float steeringMax = 30;
-    public float steeringMin = 10;
+    public float steering = 60;
+    public float steeringMaxAvoidObstacle = 45;
+    public float steeringMinAvoidObstacle = 30;
+    public float angleReachedThreshold = 3;
     public GameObject spawnOnDefeated;
     public float lookCarefullyDuration = 3;
 
@@ -261,9 +263,9 @@ public class PatrollingGuard : MonoBehaviour
     private void ActionStartMovingTowardsWaypoint()
     {
         currentDestination = path[pathIndex].waypoint.position;
-        Vector3 lookPos = currentDestination - transform.position;
-        lookPos.y = 0;
-        transform.rotation = Quaternion.LookRotation(lookPos);
+        //Vector3 lookPos = currentDestination - transform.position;
+        //lookPos.y = 0;
+        //transform.rotation = Quaternion.LookRotation(lookPos);
     }
 
     private void ActionMoveTowardsWaypoint()
@@ -355,10 +357,10 @@ public class PatrollingGuard : MonoBehaviour
     /// 0 if the center ray hit.</returns>
     private int? CheckForWalls(Vector3 direction)
     {
-        float centerRayLength = 6;
-        float slightlyOffsetRayLength = 5;
+        float centerRayLength = 3;
+        float slightlyOffsetRayLength = 2;
         float slightlyOffsetRayAngle = 10;
-        float veryOffsetRayLength = 3;
+        float veryOffsetRayLength = 1;
         float veryOffsetRayAngle = 30;
 
         Color c = Color.green;
@@ -417,25 +419,31 @@ public class PatrollingGuard : MonoBehaviour
         Vector3 destDirection = destination - transform.position;
         destDirection.y = 0;
         destDirection.Normalize();
-        int? hit = CheckForWalls(destDirection);
+        int? hit = CheckForWalls(transform.forward);
         if (hit != null)
         {
             float rotation = 0;
             if (hit == -2)
-                rotation = steeringMax;
+                rotation = steeringMaxAvoidObstacle;
             else if (hit == -1 || hit == 0)
-                rotation = steeringMin;
+                rotation = steeringMinAvoidObstacle;
             else if (hit == 1)
-                rotation = -steeringMin;
+                rotation = -steeringMinAvoidObstacle;
             else if (hit == 2)
-                rotation = -steeringMax;
+                rotation = -steeringMaxAvoidObstacle;
             transform.Rotate(new Vector3(0, rotation * Time.deltaTime, 0));
         }
         else
         {
             Vector3 lookPos = destination - transform.position;
             lookPos.y = 0;
-            transform.rotation = Quaternion.LookRotation(lookPos);
+            Quaternion targetRotation = Quaternion.LookRotation(lookPos);
+            float angleDifference = Mathf.DeltaAngle(transform.eulerAngles.y, targetRotation.eulerAngles.y);//(targetRotation.eulerAngles - transform.eulerAngles).y;
+            float sign = Mathf.Sign(angleDifference);
+            if (Mathf.Abs(angleDifference) > angleReachedThreshold)
+            {
+                transform.Rotate(new Vector3(0, sign * steering * Time.deltaTime, 0));
+            }
         }
         characterController.SimpleMove(transform.forward * walkingSpeed);
         if (animator.GetFloat("Forward") < 0.5f)

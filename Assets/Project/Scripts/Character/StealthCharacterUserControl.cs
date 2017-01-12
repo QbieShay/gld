@@ -14,7 +14,7 @@ public class StealthCharacterUserControl : MonoBehaviour
     private bool m_Whistle;
     private bool m_PutKo;
     private bool m_Kill;
-
+	private bool m_Drag;
         
     private void Start()
     {
@@ -61,6 +61,10 @@ public class StealthCharacterUserControl : MonoBehaviour
         {
             m_Kill = CrossPlatformInputManager.GetButtonDown("Kill");
         }
+		if(!m_Drag)
+		{
+			m_Drag = CrossPlatformInputManager.GetButtonDown("Drag");
+		}
     }
 
 
@@ -90,11 +94,12 @@ public class StealthCharacterUserControl : MonoBehaviour
 #endif
 
         // pass all parameters to the character control script
-        m_Character.Move(m_Move, crouch, m_Jump, m_Roll, m_Whistle, m_PutKo, m_Kill);
+        m_Character.Move(m_Move, crouch, m_Jump, m_Roll, m_Whistle, m_PutKo, m_Kill, m_Drag);
         m_Jump = false;
         m_Roll = false;
         m_Whistle = false;
         m_PutKo = false;
         m_Kill = false;
+		m_Drag = false;
     }
 }

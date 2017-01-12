@@ -20,9 +20,9 @@ public class PatrollingGuard : MonoBehaviour
     }
 
     public WaypointTime[] path;
-    public float walkingSpeed;
     public float waypointReachedThreshold = 0.1f;
     public GameObject spawnOnDefeated;
+    public float lookCarefullyDuration = 3;
 
     private int pathIndex = 0;
     private Vector3 currentDestination;
@@ -32,16 +32,19 @@ public class PatrollingGuard : MonoBehaviour
     private bool killed = false;
     private bool alerted = false;
     private Vector3 noiseSourcePosition;
+    private bool lookCarefullyTimeEnded = false;
 
     private CharacterController characterController;
     private Animator animator;
     private NoiseListener noiseListener;
+    private ObstacleAvoidance obstacleAvoidance;
 
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         noiseListener = GetComponent<NoiseListener>();
+        obstacleAvoidance = GetComponent<ObstacleAvoidance>();
 
         currentDestination = transform.position;
         // if there are no waypoints, automatically add one at NPC's position
@@ -77,7 +80,7 @@ public class PatrollingGuard : MonoBehaviour
 
         // "Check" sub-state machine
         State stateGoTowardsNoiseSource = new State("Go towards noise source", ActionStartMovingTowardsNoiseSource, ActionMoveTowardsNoiseSource, null);
-        State stateLookCarefully = new State("Look carefully", null, null, null);
+        State stateLookCarefully = new State("Look carefully", ActionStartLookingCarefully, null, null);
         StateMachine stateCheck = new StateMachine("Check", stateGoTowardsNoiseSource, null, null, null);
         stateGoTowardsNoiseSource.TopLevel = stateCheck;
         stateLookCarefully.TopLevel = stateCheck;
@@ -140,11 +143,11 @@ public class PatrollingGuard : MonoBehaviour
         stateUnderMindTrickAttempt.Transitions.Add(new Transition(stateUnderMindTrickAttempt, stateSpot, ConditionPlayerFailsMindTrick, null));
         stateMindTricked.Transitions.Add(new Transition(stateMindTricked, stateGoTowardsNextWaypoint, ConditionMindTrickTimeOver, null));
 
-        //stateMachine.StateChanged += StateMachine_StateChanged;
+        stateMachine.StateChanged += StateMachine_StateChanged;
         stateAlive.StateChanged += StateMachine_StateChanged;
-        //statePatrol.StateChanged += StateMachine_StateChanged;
-        //stateCheck.StateChanged += StateMachine_StateChanged;
-        //stateMindTricked.StateChanged += StateMachine_StateChanged;
+        statePatrol.StateChanged += StateMachine_StateChanged;
+        stateCheck.StateChanged += StateMachine_StateChanged;
+        stateMindTricked.StateChanged += StateMachine_StateChanged;
     }
 
     private void StateMachine_StateChanged(object sender, StateChangedEventArgs e)
@@ -197,6 +200,11 @@ public class PatrollingGuard : MonoBehaviour
 
     private bool ConditionLookTimeEnded()
     {
+        if (lookCarefullyTimeEnded)
+        {
+            lookCarefullyTimeEnded = false;
+            return true;
+        }
         return false;
     }
 
@@ -252,16 +260,14 @@ public class PatrollingGuard : MonoBehaviour
     private void ActionStartMovingTowardsWaypoint()
     {
         currentDestination = path[pathIndex].waypoint.position;
+        //Vector3 lookPos = currentDestination - transform.position;
+        //lookPos.y = 0;
+        //transform.rotation = Quaternion.LookRotation(lookPos);
     }
 
     private void ActionMoveTowardsWaypoint()
     {
-        Vector3 lookPos = currentDestination - transform.position;
-        lookPos.y = 0;
-        transform.rotation = Quaternion.LookRotation(lookPos);
-        characterController.SimpleMove(transform.forward * walkingSpeed);
-        if (animator.GetFloat("Forward") < 0.5f)
-            animator.SetFloat("Forward", 0.5f);
+        obstacleAvoidance.MoveTowardsPointAvoidingObstacles(currentDestination);        
     }
 
     private void ActionStopMovingTowardsWaypoint()
@@ -310,98 +316,13 @@ public class PatrollingGuard : MonoBehaviour
 
     private void ActionMoveTowardsNoiseSource()
     {
-        Vector3 destDirection = noiseSourcePosition - transform.position;
-        destDirection.y = 0;
-        destDirection.Normalize();
-        int? hit = CheckForWalls(destDirection);
-        if (hit != null)
-        {
-            float rotation = 0;
-            if (hit == -2)
-                rotation = 5;
-            else if (hit == -1 || hit == 0)
-                rotation = 2;
-            else if (hit == 1)
-                rotation = -2;
-            else if (hit == 2)
-                rotation = -5;
-            transform.Rotate(new Vector3(0, rotation * Time.deltaTime, 0));
-        }
-        else
-        {
-            Vector3 lookPos = noiseSourcePosition - transform.position;
-            lookPos.y = 0;
-            transform.rotation = Quaternion.LookRotation(lookPos);
-        }
-        characterController.SimpleMove(transform.forward * walkingSpeed);
+        obstacleAvoidance.MoveTowardsPointAvoidingObstacles(noiseSourcePosition);
     }
 
-    /// <summary>
-    /// Checks with raycasts for colliders in the "Walls" layer in the given direction.
-    /// 5 rays are cast, in the following order: very left/right, slightly left/right, center.
-    /// The first ray that hits returns the value.
-    /// </summary>
-    /// <param name="direction">Direction vector: it MUST be normalized (i.e. magnitude 1)!</param>
-    /// <returns>Returns null if not collisions detected, -2 or 2 if a very left
-    /// or very right ray hit, -1 or 1 if a slightly left or right ray hit,
-    /// 0 if the center ray hit.</returns>
-    private int? CheckForWalls(Vector3 direction)
+    private void ActionStartLookingCarefully()
     {
-        float centerRayLength = 6;
-        float slightlyOffsetRayLength = 5;
-        float slightlyOffsetRayAngle = 10;
-        float veryOffsetRayLength = 3;
-        float veryOffsetRayAngle = 30;
-
-        Color c = Color.green;
-        bool hit = false;
-
-        // very-left ray
-        hit = Physics.Raycast(transform.position, Quaternion.Euler(0, -veryOffsetRayAngle, 0) * direction, veryOffsetRayLength, LayerMask.GetMask("Walls"));
-        c = hit ? Color.red : Color.green;
-        Debug.DrawLine(transform.position, transform.position + Quaternion.Euler(0, -veryOffsetRayAngle, 0) * direction * veryOffsetRayLength, c, 1);
-        if (hit)
-        {
-            return -2;
-        }
-
-        // very-right ray
-        hit = Physics.Raycast(transform.position, Quaternion.Euler(0, veryOffsetRayAngle, 0) * direction, veryOffsetRayLength, LayerMask.GetMask("Walls"));
-        c = hit ? Color.red : Color.green;
-        Debug.DrawLine(transform.position, transform.position + Quaternion.Euler(0, veryOffsetRayAngle, 0) * direction * veryOffsetRayLength, c, 1);
-        if (hit)
-        {
-            return 2;
-        }
-
-        // slightly-left ray
-        hit = Physics.Raycast(transform.position, Quaternion.Euler(0, -slightlyOffsetRayAngle, 0) * direction, slightlyOffsetRayLength, LayerMask.GetMask("Walls"));
-        c = hit ? Color.red : Color.green;
-        Debug.DrawLine(transform.position, transform.position + Quaternion.Euler(0, -slightlyOffsetRayAngle, 0) * direction * slightlyOffsetRayLength, c, 1);
-        if (hit)
-        {
-            return -1;
-        }
-
-        // slightly-right ray
-        hit = Physics.Raycast(transform.position, Quaternion.Euler(0, slightlyOffsetRayAngle, 0) * direction, slightlyOffsetRayLength, LayerMask.GetMask("Walls"));
-        c = hit ? Color.red : Color.green;
-        Debug.DrawLine(transform.position, transform.position + Quaternion.Euler(0, slightlyOffsetRayAngle, 0) * direction * slightlyOffsetRayLength, c, 1);
-        if (hit)
-        {
-            return 1;
-        }
-
-        // center ray
-        hit = Physics.Raycast(transform.position, direction, centerRayLength, LayerMask.GetMask("Walls"));
-        c = hit ? Color.red : Color.green;
-        Debug.DrawLine(transform.position, transform.position + direction * centerRayLength, c, 1);
-        if (hit)
-        {
-            return 0;
-        }
-
-        return null;
+        lookCarefullyTimeEnded = false;
+        StartCoroutine(LookCarefully());
     }
 
     #endregion
@@ -420,5 +341,21 @@ public class PatrollingGuard : MonoBehaviour
     public void Kill()
     {
         killed = true;
+    }
+
+    
+
+    
+
+    private IEnumerator LookCarefully()
+    {
+        float time = 0;
+        while (time < lookCarefullyDuration)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        lookCarefullyTimeEnded = true;
     }
 }

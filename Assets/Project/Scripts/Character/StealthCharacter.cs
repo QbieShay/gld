@@ -364,7 +364,7 @@ public class StealthCharacter : MonoBehaviour
 			
 			Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
 			// we preserve the existing y part of the current velocity.
-			Debug.Log(m_Animator.deltaPosition);
+			//Debug.Log(m_Animator.deltaPosition);
 			if(m_Constrained){
 				v = Vector3.Project( v, m_ConstrainAxis);
 			}

@@ -7,7 +7,7 @@ public class SightCircleManager : MonoBehaviour
 
 	private SpriteRenderer sr;
     public string behaviour;
-    private string previousBehaviour="Leap";
+    private string previousBehaviour="Approach";
     public float scale;
    
 

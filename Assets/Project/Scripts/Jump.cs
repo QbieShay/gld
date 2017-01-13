@@ -10,7 +10,7 @@ public class Jump : MonoBehaviour
     public float gravity = 20.0f;
     public float rotateSpeed = 3.0f;
     public float jumpSpeedHeight = 5.0f;
-    public float jumpSpeedFoward = 5.0f;
+    public float jumpSpeedForward = 5.0f;
     private bool Airbone = false;
 
     private Vector3 moveDirection;
@@ -31,7 +31,7 @@ public class Jump : MonoBehaviour
         {
             moveDirection.y -= gravity * Time.deltaTime;
             controller.Move(moveDirection * Time.deltaTime);
-            controller.Move(transform.forward * Time.deltaTime * jumpSpeedFoward);
+            controller.Move(transform.forward * Time.deltaTime * jumpSpeedForward);
         }
 
         if (controller.isGrounded && Airbone)
@@ -46,7 +46,7 @@ public class Jump : MonoBehaviour
             moveDirection.y = jumpSpeedHeight;
             moveDirection.y -= gravity * Time.deltaTime;
             controller.Move(moveDirection * Time.deltaTime);
-            controller.Move(transform.forward * Time.deltaTime*jumpSpeedFoward);
+            controller.Move(transform.forward * Time.deltaTime*jumpSpeedForward);
             Airbone = true;
         }
    }

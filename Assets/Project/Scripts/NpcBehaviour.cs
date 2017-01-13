@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NpcBehaviour : MonoBehaviour {
+public class NpcBehaviour : MonoBehaviour
+{
 
     public string behaviour;
     
@@ -22,7 +23,7 @@ public class NpcBehaviour : MonoBehaviour {
     void Update()
     {
         timer += Time.deltaTime;
-        Debug.Log(behaviour);
+        //Debug.Log(behaviour);
         transform.rotation = Quaternion.LookRotation(player.position - transform.position);
 
         switch (behaviour)
@@ -48,8 +49,8 @@ public class NpcBehaviour : MonoBehaviour {
                 obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(player.position);
                 break;
 
-            case "Leap":
-                GetComponent<Jump>().SetDirection();
+            case "Approach":
+                GetComponent<ApproachPlayer>().Approach();
                 break;
 
             default:

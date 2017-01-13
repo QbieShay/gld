@@ -37,6 +37,9 @@ public class EnemyAttack : MonoBehaviour {
         {
             GetComponentInChildren<RangedWeapon>().Shoot();
         }
+        
+           
+        
 
     }
 }

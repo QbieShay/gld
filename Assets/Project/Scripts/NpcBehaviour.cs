@@ -5,17 +5,26 @@ using UnityEngine;
 public class NpcBehaviour : MonoBehaviour {
 
     public string behaviour;
+    
     float timer;
+    ObstacleAvoidance obstacleAdvoidance;
+    Transform player;
+
+
     // Use this for initialization
     void Start ()
     {
-  
+        obstacleAdvoidance = GetComponent<ObstacleAvoidance>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
         timer += Time.deltaTime;
+        Debug.Log(behaviour);
+        transform.rotation = Quaternion.LookRotation(player.position - transform.position);
+
         switch (behaviour)
         {
             case "Melee":
@@ -29,17 +38,26 @@ public class NpcBehaviour : MonoBehaviour {
                     GetComponent<EnemyAttack>().RangeAttack();
                     timer = 0f;
                 }
-                    break;
+                break;
 
             case "Evade":
                 GetComponent<EnemyEvade>().Evade();
                 break;
 
-            default :
+            case "Search":
+                obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(player.position);
+                break;
+
+            case "Leap":
+                GetComponent<Jump>().SetDirection();
+                break;
+
+            default:
                 break;
 
 
         }
-        
-	}
+
+    }
+
 }

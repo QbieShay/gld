@@ -436,7 +436,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StartedWalking;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStartedWalking");
+        //Debug.Log("OnStartedWalking");
     }
 
     protected virtual void OnStoppedWalking(EventArgs e)
@@ -444,7 +444,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StoppedWalking;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStoppedWalking");
+        //Debug.Log("OnStoppedWalking");
     }
 
     protected virtual void OnStartedCrouching(EventArgs e)

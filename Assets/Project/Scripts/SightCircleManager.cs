@@ -9,6 +9,7 @@ public class SightCircleManager : MonoBehaviour
     public string behaviour;
     private string previousBehaviour="Approach";
     public float scale;
+    public bool isEnable=true;
    
 
     void Start()
@@ -25,20 +26,31 @@ public class SightCircleManager : MonoBehaviour
     }
 
 
-    void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other )
     {
-        if (other.gameObject.tag == "Player" || (other.gameObject.tag == "Bullet" && gameObject.tag == behaviour))
+        if (isEnable)
         {
-            previousBehaviour = GetComponentInParent<NpcBehaviour>().behaviour;
-            GetComponentInParent<NpcBehaviour>().behaviour = behaviour;
+            if (other.gameObject.tag == "Player" || (other.gameObject.tag == "Bullet" && gameObject.tag == behaviour))
+            {
+
+                previousBehaviour = GetComponentInParent<NpcBehaviour>().behaviour;
+                GetComponentInParent<NpcBehaviour>().behaviour = behaviour;
+                GetComponentInParent<Animator>().SetBool(behaviour, true);
+                GetComponentInParent<Animator>().SetBool(previousBehaviour, false);
+
+            }
         }
+            
     }
 
     void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.tag == "Player" && isEnable)
         {
             GetComponentInParent<NpcBehaviour>().behaviour = previousBehaviour;
+            GetComponentInParent<Animator>().SetBool(behaviour, false);
+            GetComponentInParent<Animator>().SetBool(previousBehaviour, true);
+
         }
 
     }

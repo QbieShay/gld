@@ -27,6 +27,7 @@ public class Charge : MonoBehaviour {
             }
             else
             {
+       
                 isCharge = false;
             }
 
@@ -39,6 +40,14 @@ public class Charge : MonoBehaviour {
     public void SetGoalPosition(Vector3 position)
     {
         goalPosition = position;
+        StartCoroutine(Example());
+      
+    }
+
+    IEnumerator Example()
+    {
+       
+        yield return new WaitForSeconds(2.5f);
         isCharge = true;
     }
 }

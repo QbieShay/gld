@@ -452,7 +452,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StartedCrouching;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStartedCrouching");
+        //Debug.Log("OnStartedCrouching");
     }
 
     protected virtual void OnStoppedCrouching(EventArgs e)
@@ -460,7 +460,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StoppedCrouching;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStoppedCrouching");
+        //Debug.Log("OnStoppedCrouching");
     }
 
     protected virtual void OnStartedRolling(EventArgs e)
@@ -468,7 +468,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StartedRolling;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStartedRolling");
+        //Debug.Log("OnStartedRolling");
     }
 
     protected virtual void OnStoppedRolling(EventArgs e)
@@ -476,7 +476,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StoppedRolling;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStoppedRolling");
+        //Debug.Log("OnStoppedRolling");
     }
 
     protected virtual void OnWhistled(EventArgs e)
@@ -484,7 +484,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = Whistled;
         if (handler != null)
             handler(this, e);
-        Debug.Log("Whistled");
+        //Debug.Log("Whistled");
     }
 
     #endregion

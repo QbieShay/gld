@@ -38,6 +38,11 @@ public class StealthCharacter : MonoBehaviour
     PatrollingGuard m_Guard; // the Patrolling Guard in whose trigger we are inside
     bool m_PutKo = false;
     bool m_Kill = false;
+	bool m_Drag = false;
+	bool m_Constrained = false;
+	Vector3 m_ConstrainAxis = Vector3.zero;
+
+	GameObject m_DraggingObj;
 
     public event EventHandler StartedWalking;
     public event EventHandler StoppedWalking;
@@ -46,6 +51,8 @@ public class StealthCharacter : MonoBehaviour
     public event EventHandler StartedRolling;
     public event EventHandler StoppedRolling;
     public event EventHandler Whistled;
+	public event EventHandler StartDrag;
+	public event EventHandler EndDrag;
 
     public float CurrentSpeed
     {
@@ -65,7 +72,7 @@ public class StealthCharacter : MonoBehaviour
 	}
 
 
-	public void Move(Vector3 move, bool crouch, bool jump, bool roll, bool whistle, bool putKo, bool kill)
+	public void Move(Vector3 move, bool crouch, bool jump, bool roll, bool whistle, bool putKo, bool kill, bool drag)
 	{
         // ignore jump if it is disabled
         if (!m_JumpEnabled && jump)
@@ -88,27 +95,37 @@ public class StealthCharacter : MonoBehaviour
             m_Whistle = false;
         }
 
-        if (!m_Rolling)
-        {
-            // convert the world relative moveInput vector into a local-relative
-            // turn amount and forward amount required to head in the desired
-            // direction.
-            if (move.magnitude > 1f) move.Normalize();
-            move = transform.InverseTransformDirection(move);
-            CheckGroundStatus();
-            move = Vector3.ProjectOnPlane(move, m_GroundNormal);
-            m_TurnAmount = Mathf.Atan2(move.x, move.z);
-
-            if (FloatIsZero(m_ForwardAmount) && !FloatIsZero(move.z))
-                OnStartedWalking(new EventArgs());
-            else if (!FloatIsZero(m_ForwardAmount) && FloatIsZero(move.z))
-                OnStoppedWalking(new EventArgs());
-
-            m_ForwardAmount = move.z;
-
-            ApplyExtraTurnRotation();
-        }
-
+        		
+		
+		if(!m_Rolling && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded")&& drag && !m_Drag)
+		{	
+			Debug.Log("Trying drag");
+			RaycastHit hitinfo;
+			Debug.DrawRay( transform.position+ Vector3.up * GetComponent<CapsuleCollider>().height/2f
+					, transform.forward * (GetComponent<CapsuleCollider>().radius+0.3f));
+			if(Physics.Raycast(transform.position+ Vector3.up * GetComponent<CapsuleCollider>().height/2f, transform.forward,out hitinfo,
+						GetComponent<CapsuleCollider>().radius+0.3f, LayerMask.GetMask( "Draggable" )))
+			{
+				Debug.Log("Found object");
+				m_Drag = true;
+				hitinfo.collider.gameObject.transform.SetParent(transform);
+				m_DraggingObj= hitinfo.collider.gameObject;
+				m_TurnAmount = 0f;
+				m_Constrained = true;
+				m_ConstrainAxis = hitinfo.normal;
+				//TODO
+				m_MoveSpeedMultiplier = 3f;
+			}
+		}
+		else if(drag && m_Drag)
+		{
+			Debug.Log("Releasing obj");
+			m_Drag = false;
+			m_DraggingObj.transform.SetParent(null);
+			m_Constrained = false;
+			m_MoveSpeedMultiplier = 1f;
+		}
+		
         // take a NPC from behind
         if (m_Guard != null)
         {
@@ -123,7 +140,38 @@ public class StealthCharacter : MonoBehaviour
                 m_Kill = true;
             }
         }
+		if (!m_Rolling)
+        {
+            // convert the world relative moveInput vector into a local-relative
+            // turn amount and forward amount required to head in the desired
+            // direction.
+            //FIXME
+			if(m_Constrained)
+			{
+				move = Vector3.Project(move, m_ConstrainAxis);
+			}
+			 move.Normalize();
+            
+			move = transform.InverseTransformDirection(move);
+            CheckGroundStatus();
+            move = Vector3.ProjectOnPlane(move, m_GroundNormal);
+            m_TurnAmount = m_Constrained? 0f : Mathf.Atan2(move.x, move.z);
 
+            if (FloatIsZero(m_ForwardAmount) && !FloatIsZero(move.z))
+                OnStartedWalking(new EventArgs());
+            else if (!FloatIsZero(m_ForwardAmount) && FloatIsZero(move.z))
+                OnStoppedWalking(new EventArgs());
+
+			m_ForwardAmount = move.z;
+			if(m_Constrained){
+				m_ForwardAmount = m_ForwardAmount >0? Mathf.Clamp(m_ForwardAmount,0f,0.5f) : m_ForwardAmount;
+			}
+
+            ApplyExtraTurnRotation();
+        }
+
+
+		
 		// control and velocity handling is different when grounded and airborne:
 		if (m_IsGrounded)
 		{
@@ -298,11 +346,14 @@ public class StealthCharacter : MonoBehaviour
 
 	void ApplyExtraTurnRotation()
 	{
+		if(!m_Constrained)
+		{
 		// help the character turn faster (this is in addition to root rotation in the animation)
 		float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
 		transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
-	}
 
+		}
+	}
 
 	public void OnAnimatorMove()
 	{
@@ -310,8 +361,13 @@ public class StealthCharacter : MonoBehaviour
 		// this allows us to modify the positional speed before it's applied.
 		if (m_IsGrounded && Time.deltaTime > 0)
 		{
+			
 			Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
 			// we preserve the existing y part of the current velocity.
+			Debug.Log(m_Animator.deltaPosition);
+			if(m_Constrained){
+				v = Vector3.Project( v, m_ConstrainAxis);
+			}
 			v.y = m_Rigidbody.velocity.y;
 			m_Rigidbody.velocity = v;
 		}

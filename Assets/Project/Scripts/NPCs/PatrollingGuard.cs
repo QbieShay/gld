@@ -152,7 +152,7 @@ public class PatrollingGuard : MonoBehaviour
 
     private void StateMachine_StateChanged(object sender, StateChangedEventArgs e)
     {
-        Debug.Log((sender as StateMachine).Name + " changed state FROM " + e.Transition.FromState + " TO " + e.Transition.ToState);
+        //Debug.Log((sender as StateMachine).Name + " changed state FROM " + e.Transition.FromState + " TO " + e.Transition.ToState);
     }
 
     private void Update()
@@ -210,6 +210,7 @@ public class PatrollingGuard : MonoBehaviour
 
     private bool ConditionSeesPlayer()
     {
+        //Debug.Log("ConditionSeesPlayer");
         return false;
     }
 

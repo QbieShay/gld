@@ -364,7 +364,7 @@ public class StealthCharacter : MonoBehaviour
 			
 			Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
 			// we preserve the existing y part of the current velocity.
-			Debug.Log(m_Animator.deltaPosition);
+			//Debug.Log(m_Animator.deltaPosition);
 			if(m_Constrained){
 				v = Vector3.Project( v, m_ConstrainAxis);
 			}
@@ -436,7 +436,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StartedWalking;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStartedWalking");
+        //Debug.Log("OnStartedWalking");
     }
 
     protected virtual void OnStoppedWalking(EventArgs e)
@@ -444,7 +444,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StoppedWalking;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStoppedWalking");
+        //Debug.Log("OnStoppedWalking");
     }
 
     protected virtual void OnStartedCrouching(EventArgs e)
@@ -452,7 +452,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StartedCrouching;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStartedCrouching");
+        //Debug.Log("OnStartedCrouching");
     }
 
     protected virtual void OnStoppedCrouching(EventArgs e)
@@ -460,7 +460,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StoppedCrouching;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStoppedCrouching");
+        //Debug.Log("OnStoppedCrouching");
     }
 
     protected virtual void OnStartedRolling(EventArgs e)
@@ -468,7 +468,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StartedRolling;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStartedRolling");
+        //Debug.Log("OnStartedRolling");
     }
 
     protected virtual void OnStoppedRolling(EventArgs e)
@@ -476,7 +476,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = StoppedRolling;
         if (handler != null)
             handler(this, e);
-        Debug.Log("OnStoppedRolling");
+        //Debug.Log("OnStoppedRolling");
     }
 
     protected virtual void OnWhistled(EventArgs e)
@@ -484,7 +484,7 @@ public class StealthCharacter : MonoBehaviour
         EventHandler handler = Whistled;
         if (handler != null)
             handler(this, e);
-        Debug.Log("Whistled");
+        //Debug.Log("Whistled");
     }
 
     #endregion

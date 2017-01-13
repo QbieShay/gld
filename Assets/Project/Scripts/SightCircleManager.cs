@@ -7,7 +7,7 @@ public class SightCircleManager : MonoBehaviour
 
 	private SpriteRenderer sr;
     public string behaviour;
-    private string previousBehaviour="Search";
+    private string previousBehaviour="Approach";
     public float scale;
    
 

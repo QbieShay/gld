@@ -55,6 +55,18 @@ public class VisionCone : MonoBehaviour
             }
         }
     }
+
+    public string OcclusionLayer
+    {
+        get { return occlusionLayer; }
+        set
+        {
+            if (value != occlusionLayer)
+            {
+                occlusionLayer = value;
+            }
+        }
+    }
     #endregion
 
     private void Start()

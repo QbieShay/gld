@@ -4,26 +4,30 @@ using UnityEngine;
 
 public class Charge : MonoBehaviour {
 
-    // Use this for initialization
-    Vector3  goalPosition;
+
+    public float minimumDistance=3.5f;
     bool isCharge = false;
-    public float SpeedForward;
+    public float speedForward;
     CharacterController controller;
     NpcBehaviour behaviour;
-	void Start () {
+    Transform player;
+    StageManager currentStage;
+    void Start () {
 
         controller = GetComponent<CharacterController>();
         behaviour = GetComponent<NpcBehaviour>();
-	}
+        player = GameObject.FindGameObjectWithTag("Player").transform;
+        currentStage = GetComponent<StageManager>();
+    }
 	
 	// Update is called once per frame
 	void Update ()
     {
         if (isCharge)
         {
-            if(behaviour.behaviour != "Melee")
+            if(Vector3.Distance(player.position, transform.position)>minimumDistance && currentStage.stage==3)
             {
-                controller.Move(transform.forward * Time.deltaTime * SpeedForward);
+                controller.Move(transform.forward * Time.deltaTime * speedForward);
             }
             else
             {
@@ -37,9 +41,8 @@ public class Charge : MonoBehaviour {
 	}
 
 
-    public void SetGoalPosition(Vector3 position)
+    public void StartCharge()
     {
-        goalPosition = position;
         StartCoroutine(Example());
       
     }
@@ -47,7 +50,7 @@ public class Charge : MonoBehaviour {
     IEnumerator Example()
     {
        
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(1.5f);
         isCharge = true;
     }
 }

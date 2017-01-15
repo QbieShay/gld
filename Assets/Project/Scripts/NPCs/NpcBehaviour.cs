@@ -9,47 +9,55 @@ public class NpcBehaviour : MonoBehaviour
     
     float timer;
     ObstacleAvoidance obstacleAdvoidance;
-    Transform player;
+    Transform targetSearch;
     bool startSecondStage = false;
+    
 
 
     // Use this for initialization
     void Start ()
     {
         obstacleAdvoidance = GetComponent<ObstacleAvoidance>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        GetComponent<StageManager>().StartStageTwo();
-        behaviour = "Ranged";
+        targetSearch = GameObject.FindGameObjectWithTag("Player").transform;
+        //GetComponent<StageManager>().StartStageTwo();
     }
 
     // Update is called once per frame
     void Update()
     {
         timer += Time.deltaTime;
-
-        //transform.rotation = Quaternion.LookRotation(player.position - transform.position);
-      
+        Debug.Log(behaviour);
+        
         switch (behaviour)
         {
             case "Melee":
+                transform.rotation = Quaternion.LookRotation(new Vector3(targetSearch.position.x, transform.position.y, targetSearch.position.z) - transform.position);
                 GetComponent<EnemyAttack>().MeleeAttack();
 
                 break;
 
             case "Ranged":
-                 GetComponent<EnemyAttack>().RangeAttack();
+                transform.rotation = Quaternion.LookRotation(new Vector3(targetSearch.position.x,transform.position.y,targetSearch.position.z) - transform.position);
+                GetComponent<EnemyAttack>().RangeAttack();
                  break;
 
             case "Evade":
+                transform.rotation = Quaternion.LookRotation(new Vector3(targetSearch.position.x, transform.position.y, targetSearch.position.z) - transform.position);
                 GetComponent<EnemyEvade>().Evade();
                 break;
 
             case "Search":
-                obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(player.position);
+                //transform.rotation = Quaternion.LookRotation(new Vector3(targetSearch.position.x, transform.position.y, targetSearch.position.z) - transform.position);
+                obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(targetSearch.position);
                 break;
 
             case "Approach":
+                transform.rotation = Quaternion.LookRotation(new Vector3(targetSearch.position.x, transform.position.y, targetSearch.position.z) - transform.position);
                 GetComponent<ApproachPlayer>().Approach();
+                break;
+
+            case "Jump":
+                //GetComponent<ApproachPlayer>().Approach();
                 break;
 
             default:
@@ -60,5 +68,15 @@ public class NpcBehaviour : MonoBehaviour
         
 
     }
+
+
+    public void setTargetSearch(Transform target)
+    {
+        targetSearch = target;
+    }
+
+
+  
+ 
 
 }

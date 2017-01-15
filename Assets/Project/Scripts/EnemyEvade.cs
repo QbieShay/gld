@@ -2,27 +2,52 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyEvade : MonoBehaviour {
+public class EnemyEvade : MonoBehaviour
+{
 
     public int diceEvade;
     public int minimumRoll;
     private int probability;
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    float time;
+    bool evade;
+    public float evadeTime;
+    public bool hit = false;
+
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (evade)
+        {
+            time += Time.deltaTime;
+            GetComponent<Animator>().SetBool("GetHit", hit);
+
+            if (time >= evadeTime)
+            {    
+                probability = Random.Range(1, diceEvade);
+                if (probability > minimumRoll)
+                {
+
+                    Debug.Log("evade");
+                }
+                else
+                {
+                    Debug.Log("get Hit");
+                    hit = true;
+                }
+                evade = false;
+                time = 0;
+            }
+        }
+    }
 
     public void Evade()
     {
-        probability = Random.Range(1, diceEvade);
-        if (probability > minimumRoll)
-        {
-            Debug.Log("Evade Attack");
-        }
+        if(!evade)
+           evade = true;    
     }
 }

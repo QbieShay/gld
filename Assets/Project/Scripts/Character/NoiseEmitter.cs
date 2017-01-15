@@ -32,8 +32,9 @@ public class NoiseEmitter : MonoBehaviour{
 	}
 
 	float GetNoiseRadius(){
-		//TODO, get noise from Dass's Dexterity 
-		return 4f;
+		//TODO, get noise from Dass's Dexterity
+		return StatsManager.GetStealthNoiseRadius(); 
+		
 	}
 
 	public void BeginCrouch(object sender, EventArgs e){

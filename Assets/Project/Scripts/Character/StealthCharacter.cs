@@ -61,6 +61,11 @@ public class StealthCharacter : MonoBehaviour
 
     void Start()
 	{
+		//FIXME no no no and no
+		StatsManager.dexterity = 10;
+		StatsManager.strenght =4;
+		//ENDFIXME
+		
 		m_Animator = GetComponent<Animator>();
 		m_Rigidbody = GetComponent<Rigidbody>();
 		m_Capsule = GetComponent<CapsuleCollider>();
@@ -114,7 +119,7 @@ public class StealthCharacter : MonoBehaviour
 				m_Constrained = true;
 				m_ConstrainAxis = hitinfo.normal;
 				//TODO
-				m_MoveSpeedMultiplier = 3f;
+				m_MoveSpeedMultiplier = StatsManager.GetStealthDragMultiplier();
 			}
 		}
 		else if(drag && m_Drag)

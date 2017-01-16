@@ -17,7 +17,7 @@ public class EnemyAttack : MonoBehaviour {
 
     void Awake()
     {
-        nav = GetComponent<UnityEngine.AI.NavMeshAgent>();
+      
         time = 0;
     }
     void Update ()

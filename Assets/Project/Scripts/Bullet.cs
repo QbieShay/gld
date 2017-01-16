@@ -32,11 +32,13 @@ public class Bullet : MonoBehaviour {
         if (other.gameObject.tag == "Wall")
             Destroy(gameObject);
 
-        if (other.gameObject.tag == "Player")
+        
+        if (other.gameObject.tag == "Player" || other.gameObject.tag == "Magnus")
         {
             other.gameObject.GetComponent<HealthManager>().takeDamage(damage);
             Destroy(gameObject);
         }
+        
     }
 
 

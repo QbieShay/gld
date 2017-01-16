@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour {
     public float speed =3f;
     public int range;
     float startPosition;
+    public float damage;
     // Use this for initialization
 
 
@@ -24,4 +25,19 @@ public class Bullet : MonoBehaviour {
         else
             Destroy(gameObject);
     }
+
+    void OnCollisionEnter(Collision other)
+    {
+
+        if (other.gameObject.tag == "Wall")
+            Destroy(gameObject);
+
+        if (other.gameObject.tag == "Player")
+        {
+            other.gameObject.GetComponent<HealthManager>().takeDamage(damage);
+            Destroy(gameObject);
+        }
+    }
+
+
 }

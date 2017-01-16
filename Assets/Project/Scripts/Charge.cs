@@ -25,7 +25,7 @@ public class Charge : MonoBehaviour {
     {
         if (isCharge)
         {
-            if(Vector3.Distance(player.position, transform.position)>minimumDistance && currentStage.stage==3)
+            if(Vector3.Distance(player.position, transform.position)>= minimumDistance && currentStage.stage==3)
             {
                 controller.Move(transform.forward * Time.deltaTime * speedForward);
             }

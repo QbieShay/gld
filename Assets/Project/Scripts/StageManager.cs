@@ -179,6 +179,7 @@ public class StageManager : MonoBehaviour {
         foreach (SightCircleManager circle in GetComponentsInChildren<SightCircleManager>())
         {
             circle.isEnable = enable;
+            circle.gameObject.GetComponent<SpriteRenderer>().enabled = enable;
         }
     }
 

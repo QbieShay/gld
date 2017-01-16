@@ -7,6 +7,7 @@ public class Granade : MonoBehaviour {
 	// Use this for initialization
     public float explotionTime;
     float time;
+    public float damage;
 	void Start ()
     {
         time = 0;	
@@ -19,4 +20,13 @@ public class Granade : MonoBehaviour {
         if (time >= explotionTime)
             Destroy(gameObject);
 	}
+
+    void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            other.gameObject.GetComponent<HealthManager>().takeDamage(damage);
+            Destroy(gameObject);
+        }
+    }
 }

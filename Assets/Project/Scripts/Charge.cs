@@ -8,14 +8,14 @@ public class Charge : MonoBehaviour {
     public float minimumDistance=3.5f;
     bool isCharge = false;
     public float speedForward;
-    CharacterController controller;
-    NpcBehaviour behaviour;
     Transform player;
     StageManager currentStage;
-    void Start () {
+    ObstacleAvoidance obstacleAdvoidance;
 
-        controller = GetComponent<CharacterController>();
-        behaviour = GetComponent<NpcBehaviour>();
+
+    void Start ()
+    {
+        obstacleAdvoidance = GetComponent<ObstacleAvoidance>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         currentStage = GetComponent<StageManager>();
     }
@@ -27,11 +27,12 @@ public class Charge : MonoBehaviour {
         {
             if(Vector3.Distance(player.position, transform.position)>= minimumDistance && currentStage.stage==3)
             {
-                controller.Move(transform.forward * Time.deltaTime * speedForward);
+                obstacleAdvoidance.walkingSpeed = 8;
+                obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(player.position);
             }
             else
             {
-       
+                obstacleAdvoidance.walkingSpeed = 2;
                 isCharge = false;
             }
 
@@ -40,17 +41,10 @@ public class Charge : MonoBehaviour {
 
 	}
 
-
     public void StartCharge()
     {
-        StartCoroutine(Example());
-      
-    }
+        if(!isCharge)
+           isCharge = true;
 
-    IEnumerator Example()
-    {
-       
-        yield return new WaitForSeconds(1.5f);
-        isCharge = true;
     }
 }

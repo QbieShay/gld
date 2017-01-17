@@ -119,7 +119,7 @@ public class PatrollingGuard : MonoBehaviour
         stateWait.Transitions.Add(new Transition(stateWait, stateGoTowardsNextWaypoint, ConditionWaitTimeEnded, null));        
 
         // "Check" sub-state machine
-        stateGoTowardsNoiseSource.Transitions.Add(new Transition(stateGoTowardsNoiseSource, stateLookCarefully, ConditionSourceReached, null));
+        stateGoTowardsNoiseSource.Transitions.Add(new Transition(stateGoTowardsNoiseSource, stateLookCarefully, ConditionSourceReached, ActionStopWalkingAnimation));
         stateLookCarefully.Transitions.Add(new Transition(stateLookCarefully, statePatrol, ConditionLookTimeEnded, null));
 
         // "Alive" sub-state machine
@@ -318,6 +318,11 @@ public class PatrollingGuard : MonoBehaviour
     private void ActionMoveTowardsNoiseSource()
     {
         obstacleAvoidance.MoveTowardsPointAvoidingObstacles(noiseSourcePosition);
+    }
+
+    private void ActionStopWalkingAnimation()
+    {
+        animator.SetFloat("Forward", 0);
     }
 
     private void ActionStartLookingCarefully()

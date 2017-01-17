@@ -499,7 +499,7 @@ ModelImporter:
     - serializedVersion: 16
       name: HumanoidWalkBackward
       takeName: _1_a_U1_M_P_WalkForward_NtrlFaceFwd__Fb_p0_No_0_PJ_3
-      firstFrame: 341
+      firstFrame: 349
       lastFrame: 371
       wrapMode: 0
       orientationOffsetY: 2.88

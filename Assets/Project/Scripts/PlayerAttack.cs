@@ -33,6 +33,7 @@ public class PlayerAttack : MonoBehaviour {
             time += Time.deltaTime;
             if (time >= SpeedMeleeAttack)
             {
+                GetComponentInChildren<MeleeWeapon>().Hit(attackMelee);
                 time = 0;
             }
         }

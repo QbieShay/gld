@@ -16,8 +16,8 @@ public class ActionCharacterController : MonoBehaviour
 
         bool shoot=CrossPlatformInputManager.GetButton("Fire1");
         GetComponent<Animator>().SetBool("Shoot", shoot);
-        GetComponent<PlayerAttack>().RangeAttack(shoot);
-
+        //GetComponent<PlayerAttack>().RangeAttack(shoot);
+        GetComponent<PlayerAttack>().MeleeAttack(shoot);
 
     }
 

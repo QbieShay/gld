@@ -17,7 +17,8 @@ public class EnemyAttack : MonoBehaviour {
 
     void Awake()
     {
-        nav = GetComponent<UnityEngine.AI.NavMeshAgent>();
+      
+        time = 0;
     }
     void Update ()
     {
@@ -30,9 +31,10 @@ public class EnemyAttack : MonoBehaviour {
                 if (probability > minimumRoll)
                 {
                     GetComponentInChildren<RangedWeapon>().Shoot();
-                    attackRanged = false;
-                    time = 0;
+                    
                 }
+                attackRanged = false;
+                time = 0;
             }
         }
 
@@ -44,10 +46,11 @@ public class EnemyAttack : MonoBehaviour {
                 probability = Random.Range(1, diceInitiative);
                 if (probability > minimumRoll)
                 {
-                    // Debug.Log("Attack melee");
-                    attackMelee= false;
-                    time = 0;
+                    GetComponentInChildren<MeleeWeapon>().Hit(attackMelee);
+
                 }
+                attackMelee = false;
+                time = 0;
             }
         }
 

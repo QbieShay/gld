@@ -53,6 +53,7 @@ public class Jump : MonoBehaviour
             controller.Move(transform.forward * Time.deltaTime*jumpSpeedForward);
             Airbone = true;
             */
+            GetComponent<Animator>().SetBool("Jump", true);
             GameObject target = GameObject.FindGameObjectWithTag("Player");
             StartCoroutine(JumpTo(target));
             Airbone = true;
@@ -95,6 +96,8 @@ public class Jump : MonoBehaviour
             elapse_time += Time.deltaTime;
             yield return null;
         }
+        GetComponent<Animator>().SetBool("Jump", false);
+
         Airbone = false;
     }
 

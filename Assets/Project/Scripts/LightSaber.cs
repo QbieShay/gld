@@ -17,7 +17,9 @@ public class LightSaber : MeleeWeapon
         if (other.gameObject.tag == "Magnus" && hit)
         {
             Debug.Log("Dass Attack");
-            other.gameObject.GetComponent<HealthManager>().takeDamage(10);
+            //other.gameObject.GetComponent<HealthManager>().takeDamage(10);
+            other.gameObject.GetComponent<EnemyEvade>().Evade();
+
         }
 
     }

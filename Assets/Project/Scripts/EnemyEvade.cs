@@ -8,46 +8,28 @@ public class EnemyEvade : MonoBehaviour
     public int diceEvade;
     public int minimumRoll;
     private int probability;
-    float time;
-    bool evade;
-    public float evadeTime;
-    public bool hit = false;
+    Animator animator;
+    HealthManager health;
 
     void Start()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (evade)
-        {
-            time += Time.deltaTime;
-            GetComponent<Animator>().SetBool("GetHit", hit);
-
-            if (time >= evadeTime)
-            {    
-                probability = Random.Range(1, diceEvade);
-                if (probability > minimumRoll)
-                {
-
-                    Debug.Log("evade");
-                }
-                else
-                {
-                    Debug.Log("get Hit");
-                    hit = true;
-                }
-                evade = false;
-                time = 0;
-            }
-        }
+        animator = GetComponent<Animator>();
+        health = GetComponent<HealthManager>();
     }
 
     public void Evade()
     {
-        if(!evade)
-           evade = true;    
+            probability = Random.Range(1, diceEvade);
+            if (probability > minimumRoll)
+            {
+                Debug.Log("evade");
+            }
+            else
+            {
+                animator.SetBool("isHit", true);
+                health.takeDamage(10);
+            }
+            
     }
+
 }

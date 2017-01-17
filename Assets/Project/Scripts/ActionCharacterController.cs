@@ -6,19 +6,23 @@ using UnityStandardAssets.CrossPlatformInput;
 public class ActionCharacterController : MonoBehaviour
 {
 
-	// Use this for initialization
-	void Start () {
-		
+    // Use this for initialization
+    bool hit, shoot;
+    float h, v;
+    ActionCharacter actionCharacter;
+	void Start ()
+    {
+        actionCharacter = GetComponent<ActionCharacter>();	
 	}
 
     void Update()
     {
 
-        bool shoot=CrossPlatformInputManager.GetButton("Fire1");
-        GetComponent<Animator>().SetBool("Shoot", shoot);
-        //GetComponent<PlayerAttack>().RangeAttack(shoot);
-        GetComponent<PlayerAttack>().MeleeAttack(shoot);
-
+      shoot=CrossPlatformInputManager.GetButton("Fire2");
+      hit= CrossPlatformInputManager.GetButton("Fire1");
+      h = Input.GetAxis("Horizontal");
+      v = Input.GetAxis("Vertical");
+     
     }
 
   

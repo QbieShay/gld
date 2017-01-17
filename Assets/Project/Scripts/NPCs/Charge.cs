@@ -34,6 +34,7 @@ public class Charge : MonoBehaviour {
             {
                 obstacleAdvoidance.walkingSpeed = 2;
                 isCharge = false;
+                GetComponent<Animator>().SetBool("Charge", false);
             }
 
         }
@@ -43,8 +44,11 @@ public class Charge : MonoBehaviour {
 
     public void StartCharge()
     {
-        if(!isCharge)
-           isCharge = true;
+        if (!isCharge)
+        {
+            isCharge = true;
+            GetComponent<Animator>().SetBool("Charge", true);
+        }
 
     }
 }

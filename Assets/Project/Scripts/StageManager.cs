@@ -23,7 +23,7 @@ public class StageManager : MonoBehaviour {
         obstacleAdvoidance = GetComponent<ObstacleAvoidance>();
         behaviour = GetComponent<NpcBehaviour>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        riffle = GameObject.FindGameObjectWithTag("Riffle");
+        riffle = GameObject.FindGameObjectWithTag("MagnusRiffle");
 
     }
 

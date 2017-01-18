@@ -34,6 +34,19 @@ public class StealthCharacterUserControl : MonoBehaviour
         m_Character = GetComponent<StealthCharacter>();
     }
 
+    private void OnDisable()
+    {
+        m_Move = Vector3.zero;
+        m_Jump = false;
+        m_Roll = false;
+        m_Whistle = false;
+        m_PutKo = false;
+        m_Kill = false;
+        m_Drag = false;
+        m_Character.Move(m_Move, false, m_Jump, m_Roll, m_Whistle, m_PutKo, m_Kill, m_Drag);
+        m_Character.GetComponent<Animator>().SetFloat("Forward", 0);
+    }
+
 
     private void Update()
     {

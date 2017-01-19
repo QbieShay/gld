@@ -370,7 +370,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             EventHandler handler = StartedWalking;
             if (handler != null)
                 handler(this, e);
-            Debug.Log("OnStartedWalking");
+            //Debug.Log("OnStartedWalking");
         }
 
         protected virtual void OnStoppedWalking(EventArgs e)
@@ -378,7 +378,7 @@ namespace UnityStandardAssets.Characters.ThirdPerson
             EventHandler handler = StoppedWalking;
             if (handler != null)
                 handler(this, e);
-            Debug.Log("OnStoppedWalking");
+            //Debug.Log("OnStoppedWalking");
         }
 
         protected virtual void OnStartedCrouching(EventArgs e)

@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System;
 using FSM;
+using DG.Tweening;
 
 public class PatrollingGuard : MonoBehaviour
 {
@@ -33,11 +35,14 @@ public class PatrollingGuard : MonoBehaviour
     private bool alerted = false;
     private Vector3 noiseSourcePosition;
     private bool lookCarefullyTimeEnded = false;
+    private bool playerSeen = false;
 
     private CharacterController characterController;
     private Animator animator;
     private NoiseListener noiseListener;
     private ObstacleAvoidance obstacleAvoidance;
+    private VisionCone visionCone;
+    private GameObject player;
 
     private void Start()
     {
@@ -45,6 +50,8 @@ public class PatrollingGuard : MonoBehaviour
         animator = GetComponent<Animator>();
         noiseListener = GetComponent<NoiseListener>();
         obstacleAvoidance = GetComponent<ObstacleAvoidance>();
+        visionCone = GetComponentInChildren<VisionCone>();
+        player = GameObject.FindGameObjectWithTag("Player");
 
         currentDestination = transform.position;
         // if there are no waypoints, automatically add one at NPC's position
@@ -56,8 +63,14 @@ public class PatrollingGuard : MonoBehaviour
         }
 
         noiseListener.Alert += NoiseListener_Alert;
+        visionCone.VisionConeEnter += VisionCone_VisionConeEnter;
 
         InitStateMachine();
+    }
+
+    private void VisionCone_VisionConeEnter(object sender, EventArgs e)
+    {
+        playerSeen = true;
     }
 
     private void NoiseListener_Alert(object sender, AlertEventArgs e)
@@ -99,7 +112,7 @@ public class PatrollingGuard : MonoBehaviour
 
         // root-level state machine
         State stateUnderMindTrickAttempt = new State("Under Mind Trick attempt", null, null, null);
-        State stateSpot = new State("Spot", null, null, null);
+        State stateSpot = new State("Spot", ActionSpotPlayer, null, null);
         State stateGiveAlarm = new State("Give alarm", null, null, null);
         State stateKo = new State("KO", ActionPutKo, null, null);
         State stateDead = new State("Dead", ActionDie, null, null);
@@ -210,8 +223,7 @@ public class PatrollingGuard : MonoBehaviour
 
     private bool ConditionSeesPlayer()
     {
-        //Debug.Log("ConditionSeesPlayer");
-        return false;
+        return playerSeen;
     }
 
     private bool ConditionSeesNpcStunnedKoDead()
@@ -331,6 +343,20 @@ public class PatrollingGuard : MonoBehaviour
         StartCoroutine(LookCarefully());
     }
 
+    private void ActionSpotPlayer()
+    {
+        player.GetComponent<StealthCharacterUserControl>().enabled = false;
+        StartCoroutine(RotateTowardsPlayer(45f, 10f, () =>
+        {
+            animator.SetBool("Spot", true);
+            Vector3 targetPosition = transform.position + transform.forward * 5 + transform.up * 2;
+            Vector3 targetRotation = transform.eulerAngles;
+            targetRotation.y += 180f;
+            MoveCamera(targetPosition, targetRotation, 1);
+            StartCoroutine(RestartLevelAfterSeconds(2f));
+        }));
+    }
+
     #endregion
 
     private IEnumerator WaitForSeconds()
@@ -349,10 +375,6 @@ public class PatrollingGuard : MonoBehaviour
         killed = true;
     }
 
-    
-
-    
-
     private IEnumerator LookCarefully()
     {
         float time = 0;
@@ -363,5 +385,37 @@ public class PatrollingGuard : MonoBehaviour
         }
 
         lookCarefullyTimeEnded = true;
+    }
+
+    private IEnumerator RotateTowardsPlayer(float rotationSpeed, float angleReachedThreshold, Action onCompleted = null)
+    {
+        Vector3 lookDirection = player.transform.position - transform.position;
+        lookDirection.y = 0;
+        Quaternion targetRotation = Quaternion.LookRotation(lookDirection);
+        float angleDifference = Mathf.DeltaAngle(transform.eulerAngles.y, targetRotation.eulerAngles.y);
+        float sign = Mathf.Sign(angleDifference);
+        while (Mathf.Abs(angleDifference) > angleReachedThreshold)
+        {
+            transform.Rotate(new Vector3(0, sign * rotationSpeed * Time.deltaTime, 0));
+            angleDifference = Mathf.DeltaAngle(transform.eulerAngles.y, targetRotation.eulerAngles.y);
+            sign = Mathf.Sign(angleDifference);
+            yield return null;
+        }
+        if (onCompleted != null)
+            onCompleted();
+    }
+
+    private void MoveCamera(Vector3 targetPosition, Vector3 targetRotation, float duration)
+    {
+        Camera.main.GetComponent<CameraFollow>().enabled = false;
+        DOTween.defaultEaseType = Ease.InOutQuad;
+        Camera.main.transform.DOMove(targetPosition, duration);
+        Camera.main.transform.DORotate(targetRotation, duration);
+    }
+
+    private IEnumerator RestartLevelAfterSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

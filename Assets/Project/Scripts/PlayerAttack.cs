@@ -2,56 +2,25 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerAttack : MonoBehaviour {
+public class PlayerAttack : MonoBehaviour
+{
+    public float shootRatio = 0.4f;
+    public Transform shootPoint;
+    public GameObject bulletPrefab;
 
- 
-    bool attackMelee = false;
-    bool attackRanged = false;
-    public float SpeedRangedAttack;
-    public float SpeedMeleeAttack;
-    float time;
+    private float shootTime = 0f;
 
-    void Awake()
+    private void Update()
     {
-
-        time = 0;
+        shootTime += Time.deltaTime;
     }
-    void Update()
+
+    public void Shoot()
     {
-        if (attackRanged)
+        if (shootTime >= shootRatio)
         {
-            time += Time.deltaTime;
-            if (time >= SpeedRangedAttack)
-            {
-                GetComponentInChildren<RangedWeapon>().Shoot();
-                time = 0;
-            }
+            shootTime = 0f;
+            bulletPrefab.Spawn(shootPoint.position, transform.rotation);
         }
-
-        if (attackMelee)
-        {
-            time += Time.deltaTime;
-            if (time >= SpeedMeleeAttack)
-            {
-                GetComponentInChildren<MeleeWeapon>().Hit(attackMelee);
-                time = 0;
-            }
-        }
-
-    }
-
-
-    public void MeleeAttack(bool attack)
-    {
-       
-            attackMelee = attack;
-
-    }
-
-
-    public void RangeAttack(bool attack)
-    {
-      
-            attackRanged = attack;
     }
 }

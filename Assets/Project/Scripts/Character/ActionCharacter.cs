@@ -9,11 +9,13 @@ public class ActionCharacter : MonoBehaviour
 
     private CharacterController characterController;
     private Animator animator;
+    private PlayerAttack playerAttack;
 
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        playerAttack = GetComponent<PlayerAttack>();
     }
 
     public void Move(Vector2 move, Vector2 shoot)
@@ -42,9 +44,10 @@ public class ActionCharacter : MonoBehaviour
             {
                 float angle = Vector3.Angle(moveDirection, transform.forward);
                 debugText.text = angle.ToString();
-                animator.SetFloat("Forward", Mathf.Cos(angle));
-                animator.SetFloat("Turn", Mathf.Sin(angle));
+                animator.SetFloat("Forward", 0);// Mathf.Cos(angle));
+                animator.SetFloat("Turn", 0);// Mathf.Sin(angle));
             }
+            playerAttack.Shoot();
         }
     }
 

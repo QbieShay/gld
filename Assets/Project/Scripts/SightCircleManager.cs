@@ -7,7 +7,7 @@ public class SightCircleManager : MonoBehaviour
 
 	private SpriteRenderer sr;
     public string behaviour;
-    private string previousBehaviour="Approach";
+    string previousBehaviour="Approach";
     public float scale;
     public bool isEnable=true;
    
@@ -28,6 +28,7 @@ public class SightCircleManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other )
     {
+        //Debug.Log(other.gameObject);
         if (isEnable)
         {
             if (other.gameObject.tag == "Player" || (other.gameObject.tag == "Bullet" && gameObject.tag == behaviour))
@@ -45,6 +46,7 @@ public class SightCircleManager : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
+       // Debug.Log(other.gameObject);
         if (other.gameObject.tag == "Player" && isEnable)
         {
             GetComponentInParent<NpcBehaviour>().behaviour = previousBehaviour;

@@ -35,7 +35,7 @@ public class Bullet : MonoBehaviour {
         
         if (other.gameObject.tag == "Player" || other.gameObject.tag == "Magnus")
         {
-            other.gameObject.GetComponent<HealthManager>().takeDamage(damage);
+            //other.gameObject.GetComponent<HealthManager>().takeDamage(damage);
             Destroy(gameObject);
         }
         

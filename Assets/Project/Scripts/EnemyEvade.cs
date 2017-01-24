@@ -29,7 +29,10 @@ public class EnemyEvade : MonoBehaviour
             }
             else
             {
-                animator.SetBool("isHit", true);
+                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("getHit"))
+                {
+                    animator.SetBool("isHit", true);
+                }
                 health.takeDamage(damage);
                 return false;
             }

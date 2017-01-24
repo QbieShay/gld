@@ -46,8 +46,8 @@ public class EnemyAttack : MonoBehaviour {
                 probability = Random.Range(1, diceInitiative);
                 if (probability > minimumRoll)
                 {
-                    GetComponentInChildren<MeleeWeapon>().Hit(attackMelee);
-
+                    //GetComponentInChildren<MeleeWeapon>().Hit();
+                    GetComponent<Animator>().SetBool("Hit", true);
                 }
                 attackMelee = false;
                 time = 0;

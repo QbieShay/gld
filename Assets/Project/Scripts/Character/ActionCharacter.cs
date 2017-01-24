@@ -65,4 +65,6 @@ public class ActionCharacter : MonoBehaviour
             transform.Rotate(new Vector3(0, sign * rotationSpeed * Time.deltaTime, 0));
         }
     }
+
+    
 }

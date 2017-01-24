@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class MeleeWeapon : MonoBehaviour
 {
-    abstract public void Hit(bool h);
+    abstract public void Hit();
 
 }
 

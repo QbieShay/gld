@@ -36,7 +36,7 @@ public class StageManager : MonoBehaviour {
             healthPercent -= 10;
             timer = 0;
         }
-        if (stage == 1 && healthPercent < 50f)
+        if (stage == 1 && healthPercent < 80f)
         {
             stage = 2;
             StartStageTwo();
@@ -167,8 +167,9 @@ public class StageManager : MonoBehaviour {
 
     void EnableGranade()
     {
+        Debug.Log("ENABLE GRANADE");
         gl = Instantiate(granate_launcher, riffle.transform.position, riffle.transform.rotation);
-        gl.transform.parent = transform;
+        gl.transform.parent = riffle.transform;
         riffle.SetActive(false);
       
     }

@@ -37,7 +37,7 @@ public class EnemyAttack : MonoBehaviour {
                 time = 0;
             }
         }
-
+        else
         if (attackMelee)
         {
             time += Time.deltaTime;

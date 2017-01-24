@@ -7,19 +7,39 @@ public class Bullet : MonoBehaviour {
     
     public float speed =3f;
     public int range;
-    float startPosition;
+    public float destroyTime = 2f;
     public float damage;
     // Use this for initialization
     Rigidbody rb;
 
-    void Start ()
+    void Awake ()
     {
-        startPosition = transform.position.z;
+        
         rb = GetComponent<Rigidbody>();
-        rb.velocity = transform.forward * speed;
+        
     }
-	
-	// Update is called once per frame
+
+    private void OnEnable()
+    {
+        rb.velocity = Vector3.zero;
+        StartCoroutine(StartMovingInNextFrame());
+    }
+
+    private IEnumerator StartMovingInNextFrame()
+    {
+        yield return null;
+        rb.velocity = transform.forward * speed;
+        
+    }
+
+    private IEnumerator RecycleAfterSeconds()
+    {
+        yield return new WaitForSeconds(destroyTime);
+        gameObject.Recycle();
+    }
+
+
+    // Update is called once per frame
     /*
 	void Update ()
     {
@@ -29,27 +49,36 @@ public class Bullet : MonoBehaviour {
             Destroy(gameObject);
     }
     */
-
-    void FixedUpdate()
-    {
-        if (Mathf.Abs(transform.position.z - startPosition) > range)
-            Destroy(gameObject);
-
-    }
+    
 
     void OnCollisionEnter(Collision other)
     {
 
         if (other.gameObject.tag == "Wall")
-            Destroy(gameObject);
+            gameObject.Recycle();
 
-        
-        if (other.gameObject.tag == "Player" || other.gameObject.tag == "Magnus")
+
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            //other.gameObject.GetComponent<HealthManager>().takeDamage(damage);
-            Destroy(gameObject);
+            other.gameObject.GetComponentInParent<HealthManager>().takeDamage(damage);
+            gameObject.Recycle();
         }
-        
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Enemies"))
+        {
+            bool evaded = other.gameObject.GetComponentInParent<EnemyEvade>().Evade(damage);
+            if (evaded)
+            {
+                // TODO: evade animation
+            }
+            else
+            {
+                gameObject.Recycle();
+            }
+        }
+        else
+        {
+            gameObject.Recycle();
+        }
     }
 
 

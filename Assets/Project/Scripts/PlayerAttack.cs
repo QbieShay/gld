@@ -8,11 +8,29 @@ public class PlayerAttack : MonoBehaviour
     public Transform shootPoint;
     public GameObject bulletPrefab;
 
+    public float meleeAttackRatio = 0.4f;
+    private float meleeDamage;
+
     private float shootTime = 0f;
+    private float meleeTime = 0f;
+
+    private LightSaber lightsaber;
+    private Riffle riffle;
+    private Animator animator;
+
+    private void Start()
+    {
+        meleeDamage = 5f; // TODO: get from stats
+
+        lightsaber = GetComponentInChildren<LightSaber>();
+        riffle = GetComponentInChildren<Riffle>();
+        animator = GetComponent<Animator>();
+    }
 
     private void Update()
     {
         shootTime += Time.deltaTime;
+        meleeTime += Time.deltaTime;
     }
 
     public void Shoot()
@@ -20,7 +38,29 @@ public class PlayerAttack : MonoBehaviour
         if (shootTime >= shootRatio)
         {
             shootTime = 0f;
-            bulletPrefab.Spawn(shootPoint.position, transform.rotation);
+            riffle.Shoot();//bulletPrefab.Spawn(shootPoint.position, transform.rotation);
         }
+    }
+
+    public void MeleeAttack()
+    {
+        if (meleeTime >= meleeAttackRatio)
+        {
+            meleeTime = 0f;
+            lightsaber.Hit();
+            animator.SetBool("AttackMelee", true);
+            StartCoroutine(ResetMeleeAttack());
+        }
+    }
+
+    private IEnumerator ResetMeleeAttack()
+    {
+        yield return new WaitForSeconds(meleeAttackRatio);
+        animator.SetBool("AttackMelee", false);
+    }
+
+    public float GetMeleeAttackDamage()
+    {
+        return meleeDamage;
     }
 }

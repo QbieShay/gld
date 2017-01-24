@@ -17,19 +17,20 @@ public class EnemyEvade : MonoBehaviour
         health = GetComponent<HealthManager>();
     }
 
-    public void Evade()
+    public bool Evade(float damage)
     {
             probability = Random.Range(1, diceEvade);
             if (probability > minimumRoll)
             {
                 Debug.Log("evade");
+                return true;
             }
             else
             {
                 animator.SetBool("isHit", true);
-                health.takeDamage(10);
+                health.takeDamage(damage);
+                return false;
             }
-            
     }
 
 }

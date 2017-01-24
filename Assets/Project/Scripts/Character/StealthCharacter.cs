@@ -24,6 +24,7 @@ public class StealthCharacter : MonoBehaviour
 	Animator m_Animator;
 	bool m_IsGrounded;
 	float m_OrigGroundCheckDistance;
+	bool m_Climbing;
 	const float k_Half = 0.5f;
 	float m_TurnAmount;
 	float m_ForwardAmount;
@@ -253,8 +254,11 @@ public class StealthCharacter : MonoBehaviour
 		{
 			m_Animator.SetFloat("Jump", m_Rigidbody.velocity.y);
 		}
-        m_Animator.SetBool("Rolling", m_Rolling);
-        m_Animator.SetBool("Whistle", m_Whistle);
+		if(!m_Climbing)
+		{
+  	      m_Animator.SetBool("Rolling", m_Rolling);
+		}
+	  	m_Animator.SetBool("Whistle", m_Whistle);
         m_Animator.SetBool("PutKo", m_PutKo);
         m_Animator.SetBool("Kill", m_Kill);
 
@@ -310,12 +314,47 @@ public class StealthCharacter : MonoBehaviour
         if (roll && !m_Rolling && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
         {
             // roll!
-            m_Rolling = true;
-            StartCoroutine(Roll());
-        }
+			m_Rolling = true;
+			RaycastHit hitinfo;
+			if( Physics.Raycast(transform.position+ Vector3.up *0.1f, transform.forward,out hitinfo,
+						GetComponent<CapsuleCollider>().radius+0.5f) && (hitinfo.collider.bounds.center + hitinfo.collider.bounds.extents/2f).y -
+				   	(gameObject.GetComponent<Collider>().bounds.center - gameObject.GetComponent<Collider>().bounds.extents/2f).y < 2.1f)
+			{
+				Debug.Log("Climb");
+				StartCoroutine( Climb(hitinfo) );
+			}else
+			{	
+				StartCoroutine(Roll());
+			}
+			
+		}
+        
 	}
 
-    protected IEnumerator Roll()
+	protected IEnumerator Climb( RaycastHit hitinfo){
+				m_Climbing = true;		
+				float deltaY = (hitinfo.collider.bounds.center + hitinfo.collider.bounds.extents/2f).y -
+				   	(gameObject.GetComponent<Collider>().bounds.center - gameObject.GetComponent<Collider>().bounds.extents/2f).y;
+				if(deltaY > 2.1f) yield break;
+				Vector3 initialPosition = transform.position;
+				Vector3 TopOfCollider = transform.position + transform.forward  + Vector3.up*(deltaY + 
+					GetComponent<CapsuleCollider>().height);
+				float time = 0f;
+				GetComponent<Rigidbody>().isKinematic = true;
+				while (time < m_RollTime )
+				{
+					transform.position = Vector3.Lerp(
+					initialPosition, TopOfCollider,
+					time/m_RollTime);	
+					time += Time.deltaTime;
+					yield return null;
+				}
+				m_Rolling = false;
+				m_Climbing = false;
+				GetComponent<Rigidbody>().isKinematic = false;
+				
+				}
+				protected IEnumerator Roll()
     {
         // if the character was walking, now he stopped to perform a roll
         if (!FloatIsZero(m_ForwardAmount))

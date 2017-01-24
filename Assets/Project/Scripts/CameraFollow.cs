@@ -26,11 +26,11 @@ public class CameraFollow : MonoBehaviour {
     private void Update () {
         //Debug.Log("rbToFollow.velocity: " + rbToFollow.velocity.magnitude);
 
-        if (rbToFollow)
+        if (rbToFollow != null)
             easingFactor = Mathf.Lerp(minEasingFactor, maxEasingFactor, rbToFollow.velocity.magnitude / speedForMaxEasingFactor);
         else
             easingFactor = minEasingFactor;
-
+		Debug.Log("To follow in camf is" + toFollow);
         forwardDirection = toFollow.transform.forward;
         Vector3 dest = toFollow.transform.position + forwardDirection * forwardDistance + offset;
         transform.position = Vector3.Lerp(transform.position, dest, easingFactor * Time.deltaTime);

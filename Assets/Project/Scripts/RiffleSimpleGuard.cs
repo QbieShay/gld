@@ -44,6 +44,7 @@ public class RiffleSimpleGuard : RangedWeapon
 
     void Update()
     {
+        /*
         if (behaviour.behaviour == "Search" && behaviour.reach == true)
         {
             behaviour.target = player;
@@ -53,6 +54,7 @@ public class RiffleSimpleGuard : RangedWeapon
 
          
         }
+        */
 
         if (behaviour.behaviour == "Ranged")
         {

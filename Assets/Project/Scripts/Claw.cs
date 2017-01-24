@@ -2,21 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Claw : MeleeWeapon {
+public class Claw : MeleeWeapon
+{
+    public float range;
+    public Transform player;
+    [Range(0, 2)]
+    public float delay;
 
-    bool hit;
-    public override void Hit(bool h)
+
+    public override void Hit()
     {
-        hit = h;
+
+        StartCoroutine(WaitTime());
+
+
     }
 
-    void OnTriggerEnter(Collider other)
+    IEnumerator WaitTime()
     {
-        //Debug.Log("Dass Attack");
-        if (other.gameObject.tag == "Player" && hit)
+        
+        yield return new WaitForSeconds(delay);
+        RaycastHit hit;
+        Debug.DrawRay(transform.position, transform.forward * 5f, Color.red, 5.0f);
+        if (Physics.Raycast(transform.position, transform.forward, out hit, range))
         {
-            Debug.Log("Magnus Attack");
-            other.gameObject.GetComponent<HealthManager>().takeDamage(10);
+            if (hit.collider.gameObject.tag == "Player")
+            {
+                Debug.Log("hit");
+            }
         }
 
     }

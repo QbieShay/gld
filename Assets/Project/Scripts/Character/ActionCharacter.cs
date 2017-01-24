@@ -47,6 +47,10 @@ public class ActionCharacter : MonoBehaviour
                 animator.SetFloat("Forward", 0);// Mathf.Cos(angle));
                 animator.SetFloat("Turn", 0);// Mathf.Sin(angle));
             }
+            else
+            {
+                animator.SetFloat("Forward", 0);
+            }
             playerAttack.Shoot();
         }
     }
@@ -61,4 +65,6 @@ public class ActionCharacter : MonoBehaviour
             transform.Rotate(new Vector3(0, sign * rotationSpeed * Time.deltaTime, 0));
         }
     }
+
+    
 }

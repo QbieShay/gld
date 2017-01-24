@@ -16,7 +16,6 @@ public class StageManager : MonoBehaviour {
     Transform player;
     public int stage;
     public float healthPercent;
-    float timer;
    
     void Start ()
     {
@@ -30,12 +29,7 @@ public class StageManager : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-        timer += Time.deltaTime;
-        if (timer > 10.0)
-        {
-            healthPercent -= 10;
-            timer = 0;
-        }
+        
         if (stage == 1 && healthPercent < 50f)
         {
             stage = 2;
@@ -167,8 +161,9 @@ public class StageManager : MonoBehaviour {
 
     void EnableGranade()
     {
+        Debug.Log("ENABLE GRANADE");
         gl = Instantiate(granate_launcher, riffle.transform.position, riffle.transform.rotation);
-        gl.transform.parent = transform;
+        gl.transform.parent = riffle.transform.parent;
         riffle.SetActive(false);
       
     }

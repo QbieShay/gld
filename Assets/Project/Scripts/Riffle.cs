@@ -5,8 +5,6 @@ using UnityEngine;
 public class Riffle : RangedWeapon
 {
 
-
-    public Transform center;
     public GameObject bullet;
     public Transform  bulletStart;
     public Transform myTranform;

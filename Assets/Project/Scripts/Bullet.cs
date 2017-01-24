@@ -10,20 +10,31 @@ public class Bullet : MonoBehaviour {
     float startPosition;
     public float damage;
     // Use this for initialization
-
+    Rigidbody rb;
 
     void Start ()
     {
         startPosition = transform.position.z;
-	}
+        rb = GetComponent<Rigidbody>();
+        rb.velocity = transform.forward * speed;
+    }
 	
 	// Update is called once per frame
+    /*
 	void Update ()
     {
         if (Mathf.Abs(transform.position.z - startPosition) < range)
             transform.Translate(0, 0, speed * Time.deltaTime);
         else
             Destroy(gameObject);
+    }
+    */
+
+    void FixedUpdate()
+    {
+        if (Mathf.Abs(transform.position.z - startPosition) > range)
+            Destroy(gameObject);
+
     }
 
     void OnCollisionEnter(Collision other)

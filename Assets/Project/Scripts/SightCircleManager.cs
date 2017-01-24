@@ -28,10 +28,11 @@ public class SightCircleManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other )
     {
+        Debug.Log(behaviour);
         //Debug.Log(other.gameObject);
         if (isEnable)
         {
-            if (other.gameObject.tag == "Player" || (other.gameObject.tag == "Bullet" && gameObject.tag == behaviour))
+            if (other.gameObject.tag == "Player")
             {
 
                 previousBehaviour = GetComponentInParent<NpcBehaviour>().behaviour;

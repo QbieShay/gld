@@ -31,7 +31,7 @@ public class NpcBehaviour : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        Debug.Log(behaviour);
+        
         
         switch (behaviour)
         {

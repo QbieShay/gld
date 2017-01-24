@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 public class WallHider : MonoBehaviour{
 
-	HashSet<Renderer> hiddenObjs;
+	HashSet<HidableWall> hiddenObjs;
 	public GameObject dass;
 
 	void Start(){
-		hiddenObjs = new HashSet<Renderer>();
+		hiddenObjs = new HashSet<HidableWall>();
 		GameObject tmpDass = GameObject.Find("Dass");
 		if(tmpDass!=null){
 			dass = tmpDass;
@@ -17,18 +17,18 @@ public class WallHider : MonoBehaviour{
 	void Update(){
 		RaycastHit[] hits = Physics.RaycastAll(transform.position, dass.transform.position - transform.position,
 				Vector3.Distance(dass.transform.position, transform.position), LayerMask.GetMask("Walls"));
-		HashSet<Renderer> toDisable = new HashSet<Renderer>();
+		HashSet<HidableWall> toDisable = new HashSet<HidableWall>();
 		foreach( RaycastHit hit in hits){
-			Renderer rend  = hit.collider.gameObject.GetComponent<Renderer>();
-			if( rend != null){
-				rend.enabled = false;
-				toDisable.Add(rend);	
-			}
+			HidableWall wall = hit.collider.gameObject.GetComponent<HidableWall>();
+			if(wall!=null){
+				wall.Hide();
+				toDisable.Add( wall );
+			}	
 		}
-		HashSet<Renderer> toEnable = hiddenObjs;
+		HashSet<HidableWall> toEnable = hiddenObjs;
 		toEnable.ExceptWith(toDisable);
-		foreach ( Renderer rend in toEnable){
-			rend.enabled = true;
+		foreach ( HidableWall rend in toEnable){
+			rend.Show();
 		}
 
 		hiddenObjs = toDisable;

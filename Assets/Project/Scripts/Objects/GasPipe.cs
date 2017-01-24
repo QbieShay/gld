@@ -6,6 +6,7 @@ using System.Collections;
 [RequireComponent (typeof(Collider))]
 public class GasPipe : MonoBehaviour{
 
+	public float offsetTime;
 	public float ActiveTime;
 	public float PauseTime;
 	
@@ -18,10 +19,15 @@ public class GasPipe : MonoBehaviour{
 	}
 
 	IEnumerator LoopPipe(){
+		if(offsetTime > 0){
+			yield return new WaitForSeconds(offsetTime);
+		}
 		while(true){
 			GetComponent<Collider>().enabled = true;
+			GetComponent<Renderer>().enabled = true;
 			yield return new WaitForSeconds(ActiveTime);
 			GetComponent<Collider>().enabled = false;
+			GetComponent<Renderer>().enabled = false;
 			yield return new WaitForSeconds(PauseTime);
 		}
 	}

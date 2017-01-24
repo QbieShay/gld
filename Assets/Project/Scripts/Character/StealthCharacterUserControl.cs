@@ -15,6 +15,8 @@ public class StealthCharacterUserControl : MonoBehaviour
     private bool m_PutKo;
     private bool m_Kill;
 	private bool m_Drag;
+
+    private PatrollingGuard m_Guard;
         
     private void Start()
     {
@@ -60,17 +62,17 @@ public class StealthCharacterUserControl : MonoBehaviour
             m_Roll = CrossPlatformInputManager.GetButtonDown("Roll");
         }
 
-        if (!m_Whistle)
+        if (!m_Whistle && m_Guard == null)
         {
             m_Whistle = CrossPlatformInputManager.GetButtonDown("Whistle");
         }
 
-        if (!m_PutKo)
+        if (!m_PutKo && m_Guard != null)
         {
             m_PutKo = CrossPlatformInputManager.GetButtonDown("PutKo");
         }
 
-        if (!m_Kill)
+        if (!m_Kill && m_Guard != null)
         {
             m_Kill = CrossPlatformInputManager.GetButtonDown("Kill");
         }
@@ -87,7 +89,7 @@ public class StealthCharacterUserControl : MonoBehaviour
         // read inputs
         float h = CrossPlatformInputManager.GetAxis("Horizontal");
         float v = CrossPlatformInputManager.GetAxis("Vertical");
-        bool crouch = Input.GetKey(KeyCode.C);
+        bool crouch = Input.GetButton("Crouch");
 
         // calculate move direction to pass to character
         if (m_Cam != null)
@@ -114,5 +116,23 @@ public class StealthCharacterUserControl : MonoBehaviour
         m_PutKo = false;
         m_Kill = false;
 		m_Drag = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "BehindTrigger")
+        {
+            if (m_Guard == null)
+                m_Guard = other.GetComponentInParent<PatrollingGuard>();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.tag == "BehindTrigger")
+        {
+            if (m_Guard != null)
+                m_Guard = null;
+        }
     }
 }

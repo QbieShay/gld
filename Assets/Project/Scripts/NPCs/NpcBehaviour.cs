@@ -33,6 +33,8 @@ public class NpcBehaviour : MonoBehaviour
     {
         GetComponentInChildren<Animator>().SetBool("Dead", true);
         dead = true;
+
+        // TODO: animazione di fine livello e passaggio a scena successiva
     }
 
     // Update is called once per frame

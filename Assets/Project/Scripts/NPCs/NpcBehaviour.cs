@@ -13,9 +13,9 @@ public class NpcBehaviour : MonoBehaviour
     bool startSecondStage = false;
   
     Transform playerTransform;
-    public float tresholdToTarget = 2.0f;
+    public float tresholdToTarget = 0.1f;
 
-    public bool reach = false;
+    
 
 
 
@@ -32,7 +32,6 @@ public class NpcBehaviour : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        Debug.Log(behaviour);
 
         switch (behaviour)
         {
@@ -48,12 +47,8 @@ public class NpcBehaviour : MonoBehaviour
                  break;
 
             case "Search":
-                if (Vector3.Distance(transform.position, target.position) > tresholdToTarget)
-                {
-                    obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(target.position);
-                }
-                else
-                    reach = true;
+                obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(target.position);
+               
                 break;
 
             case "Approach":

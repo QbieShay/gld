@@ -169,7 +169,7 @@ public class StageManager : MonoBehaviour {
     {
         Debug.Log("ENABLE GRANADE");
         gl = Instantiate(granate_launcher, riffle.transform.position, riffle.transform.rotation);
-        gl.transform.parent = riffle.transform;
+        gl.transform.parent = riffle.transform.parent;
         riffle.SetActive(false);
       
     }

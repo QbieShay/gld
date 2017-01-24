@@ -28,7 +28,7 @@ public class SightCircleManager : MonoBehaviour
 
     void OnTriggerEnter(Collider other )
     {
-        Debug.Log(behaviour);
+       
         //Debug.Log(other.gameObject);
         if (isEnable)
         {

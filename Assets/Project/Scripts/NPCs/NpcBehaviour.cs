@@ -47,11 +47,6 @@ public class NpcBehaviour : MonoBehaviour
                  GetComponent<EnemyAttack>().RangeAttack();
                  break;
 
-            case "Evade":
-                transform.rotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position);
-                GetComponent<EnemyEvade>().Evade();
-                break;
-
             case "Search":
                 if (Vector3.Distance(transform.position, target.position) > tresholdToTarget)
                 {

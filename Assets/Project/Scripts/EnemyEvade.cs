@@ -19,6 +19,8 @@ public class EnemyEvade : MonoBehaviour
 
     public bool Evade(float damage)
     {
+        if (health.health > 0)
+        {
             probability = Random.Range(1, diceEvade);
             if (probability > minimumRoll)
             {
@@ -31,6 +33,12 @@ public class EnemyEvade : MonoBehaviour
                 health.takeDamage(damage);
                 return false;
             }
+        }
+        else
+        {
+            animator.SetBool("Dead", true);
+            return false;
+        }
     }
 
 }

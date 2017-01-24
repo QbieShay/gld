@@ -14,8 +14,8 @@ public class NpcBehaviour : MonoBehaviour
   
     Transform playerTransform;
     public float tresholdToTarget = 0.1f;
-
-    
+    private HealthManager healthManager;
+    private bool dead = false;
 
 
 
@@ -24,12 +24,24 @@ public class NpcBehaviour : MonoBehaviour
     {
         obstacleAdvoidance = GetComponent<ObstacleAvoidance>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
+        healthManager = GetComponent<HealthManager>();
+        healthManager.Dead += HealthManager_Dead;
         //GetComponent<StageManager>().StartStageTwo();
+    }
+
+    private void HealthManager_Dead(object sender, System.EventArgs e)
+    {
+        GetComponentInChildren<Animator>().SetBool("Dead", true);
+        dead = true;
+
+        // TODO: animazione di fine livello e passaggio a scena successiva
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (dead)
+            return;
         timer += Time.deltaTime;
 
 
@@ -65,7 +77,7 @@ public class NpcBehaviour : MonoBehaviour
 
 
         }
-        
+        Debug.Log("STATE: " + behaviour);
 
     }
 

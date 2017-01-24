@@ -9,14 +9,12 @@ public class Riffle : RangedWeapon
     public Transform  bulletStart;
     public Transform myTranform;
     RaycastHit hit;
-    Transform player;
     bool shoot = false;
 
     public override void Shoot()
     {
 
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        GameObject b = Instantiate(bullet, bulletStart.position, transform.rotation);
+        GameObject b = bullet.Spawn(bulletStart.position, bulletStart.rotation);//Instantiate(bullet, bulletStart.position, bulletStart.rotation);
         Physics.IgnoreCollision(b.GetComponent<Collider>(), myTranform.GetComponent<Collider>());
         
 

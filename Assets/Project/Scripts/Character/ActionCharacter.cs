@@ -53,6 +53,11 @@ public class ActionCharacter : MonoBehaviour
             }
             playerAttack.Shoot();
         }
+
+        if (Input.GetButtonDown("Melee"))
+        {
+            playerAttack.MeleeAttack();
+        }
     }
 
     private void LookTowardsDirection(Vector3 direction, float rotationSpeed, float angleReachedThreshold)

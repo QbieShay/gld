@@ -16,7 +16,6 @@ public class StageManager : MonoBehaviour {
     Transform player;
     public int stage;
     public float healthPercent;
-    float timer;
    
     void Start ()
     {
@@ -30,13 +29,8 @@ public class StageManager : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-        timer += Time.deltaTime;
-        if (timer > 10.0)
-        {
-            healthPercent -= 10;
-            timer = 0;
-        }
-        if (stage == 1 && healthPercent < 80f)
+        
+        if (stage == 1 && healthPercent < 50f)
         {
             stage = 2;
             StartStageTwo();

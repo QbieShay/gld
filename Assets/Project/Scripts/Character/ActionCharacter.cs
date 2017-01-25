@@ -27,6 +27,7 @@ public class ActionCharacter : MonoBehaviour
 
         if (shoot.magnitude < 0.1f)
         {
+            animator.SetBool("AttackRanged", false);
             if (moveDirection.magnitude > 0.1f)
             {
                 LookTowardsDirection(moveDirection.normalized, 360f, 5f);//transform.LookAt(transform.position + moveDirection.normalized);
@@ -37,9 +38,15 @@ public class ActionCharacter : MonoBehaviour
                 animator.SetFloat("Forward", Vector3.Dot(moveDirection, transform.forward));
             }
             animator.SetFloat("Turn", 0);
+
+            if (isDash)
+            {
+                dash.startDash();
+            }
         }
         else
         {
+            animator.SetBool("AttackRanged", true);
             Vector3 shootDirection = new Vector3(shoot.x, 0, shoot.y);
             transform.LookAt(transform.position + shootDirection);
             if (moveDirection.magnitude > 0.1f)
@@ -61,10 +68,7 @@ public class ActionCharacter : MonoBehaviour
             playerAttack.MeleeAttack();
         }
 
-        if (isDash)
-        {
-            dash.startDash();
-        }
+       
 
 
        

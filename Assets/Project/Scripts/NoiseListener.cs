@@ -33,7 +33,7 @@ public class NoiseListener:MonoBehaviour{
 		lastNoisePosition = position;
 		currentAlert += intensity/hearing;
 		noiseInLastUpdate += 0.01f;
-		Debug.Log( "Heard sound:" + intensity + ", alert is " + currentAlert );
+		//Debug.Log( "Heard sound:" + intensity + ", alert is " + currentAlert );
 	}
 
 	bool forgetting;
@@ -60,6 +60,7 @@ public class NoiseListener:MonoBehaviour{
 				Debug.Log( "Alerted");
 				if(Alert!=null){
 					Alert(this, new AlertEventArgs(lastNoisePosition));
+					noiseInLastUpdate =0f;
 				}
 			}
 		}

@@ -1,43 +1,33 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using System.Collections;
+using System.Collections.Generic;
 
 public class PipeActivableFinal : PipeActivable{
 	//FIXME porcata epica
 	//
 	//
-	public string EdNextScene;
+	public GameObject toRemove;
+	public GameObject focus;
+	public float destroyEffectDuration = 4;
+
 	LayerMask all;
 	void Start(){
 		//all = int.MaxValue;
 		all = ~0;
-		NextScene = EdNextScene;
+	if(cratesInPosition == null){
+			cratesInPosition = new HashSet<GameObject>();
+		}
 	}
 
-	public string NextScene{
-		get{
-			return scene;
-		}
-		set {
-			if(!scene.Equals("null")) return;
-			scene = value;
-		}
-	}
 	private static string scene = "null";
-
-	private static int crates;
-	private static int cratesInPosition{
-		get{ return crates; }
-		set {
-			crates = value;
-			Debug.Log("Added crate" + crates);
-			if(crates >= 3){
-	        	SceneManager.LoadScene(scene);
-			}
-		}
-	}
+	private static bool requestFocus= false;
+	private static HashSet<GameObject> cratesInPosition;
 
 	public override void Activate(){
-		cratesInPosition = cratesInPosition +1;
+		cratesInPosition.Add(gameObject);
+		if (cratesInPosition.Count == 3){
+			StartCoroutine(destroyWall());
+		}
 	}
 	public override void Deactivate(){
 		Collider[] cols = Physics.OverlapSphere( transform.position, GetComponent<Collider>().bounds.size.x/2f,
@@ -47,6 +37,17 @@ public class PipeActivableFinal : PipeActivable{
 				return;
 			}
 		}
-		cratesInPosition = cratesInPosition -1;
+		cratesInPosition.Remove(gameObject);
 	}
-}
+
+	IEnumerator destroyWall(){
+		if(!requestFocus){
+					requestFocus = true;
+					CameraRequestFocus fc = gameObject.AddComponent<CameraRequestFocus>();
+					fc.focusTime = destroyEffectDuration +1f;
+					fc.RequestFocus( focus, GameObject.Find("Dass") );
+		}
+		yield return new WaitForSeconds(destroyEffectDuration);
+		Destroy( toRemove );
+	}
+	}

@@ -13,7 +13,7 @@ public class StealthCharacter : MonoBehaviour
     [SerializeField] bool m_JumpEnabled = true;
 	[Range(1f, 4f)][SerializeField] float m_GravityMultiplier = 2f;
 	[SerializeField] float m_RunCycleLegOffset = 0.2f; //specific to the character in sample assets, will need to be modified to work with others
-	[SerializeField] float m_MoveSpeedMultiplier = 1f;
+	[SerializeField] float m_MoveSpeedMultiplier = 0.75f;
 	[SerializeField] float m_AnimSpeedMultiplier = 1f;
 	[SerializeField] float m_GroundCheckDistance = 0.1f;
     [SerializeField] float m_RollForce = 4;
@@ -63,8 +63,8 @@ public class StealthCharacter : MonoBehaviour
     void Start()
 	{
 		//FIXME no no no and no
-		StatsManager.dexterity = 10;
-		StatsManager.strenght =4;
+		StatsManager.dexterity = 14;
+		StatsManager.strenght = 0;
 		//ENDFIXME
 		
 		m_Animator = GetComponent<Animator>();
@@ -75,6 +75,7 @@ public class StealthCharacter : MonoBehaviour
 
 		m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
 		m_OrigGroundCheckDistance = m_GroundCheckDistance;
+		m_Animator.SetFloat("SpeedMultiplier", StatsManager.GetRollSpeed());
 	}
 
 
@@ -113,6 +114,8 @@ public class StealthCharacter : MonoBehaviour
 						GetComponent<CapsuleCollider>().radius+0.3f, LayerMask.GetMask( "Draggable" )))
 			{
 				Debug.Log("Found object");
+				transform.forward = -hitinfo.normal;
+				//transform.up = Vector3.up;
 				m_Drag = true;
 				hitinfo.collider.gameObject.transform.SetParent(transform);
 				m_DraggingObj= hitinfo.collider.gameObject;
@@ -170,9 +173,9 @@ public class StealthCharacter : MonoBehaviour
 
 			m_ForwardAmount = move.z;
 			if(m_Constrained){
-				m_ForwardAmount = m_ForwardAmount >0? Mathf.Clamp(m_ForwardAmount,0f,0.5f) : m_ForwardAmount;
+				m_ForwardAmount = m_ForwardAmount >0? Mathf.Clamp(m_ForwardAmount,0f,0.5f) : m_ForwardAmount*2f;
 			}
-
+			Debug.Log("Forward amount :" + m_ForwardAmount);
             ApplyExtraTurnRotation();
         }
 
@@ -245,6 +248,7 @@ public class StealthCharacter : MonoBehaviour
 
 	void UpdateAnimator(Vector3 move)
 	{
+	
         // update the animator parameters
 		m_Animator.SetFloat("Forward", m_ForwardAmount, 0.1f, Time.deltaTime);
 		m_Animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
@@ -311,14 +315,16 @@ public class StealthCharacter : MonoBehaviour
 		}
 
         // check whether condistions are right to allow a roll:
-        if (roll && !m_Rolling && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
+        if (! m_Drag && roll && !m_Rolling && m_Animator.GetCurrentAnimatorStateInfo(0).IsName("Grounded"))
         {
             // roll!
 			m_Rolling = true;
 			RaycastHit hitinfo;
 			if( Physics.Raycast(transform.position+ Vector3.up *0.1f, transform.forward,out hitinfo,
-						GetComponent<CapsuleCollider>().radius+0.5f) && (hitinfo.collider.bounds.center + hitinfo.collider.bounds.extents/2f).y -
-				   	(gameObject.GetComponent<Collider>().bounds.center - gameObject.GetComponent<Collider>().bounds.extents/2f).y < 2.1f)
+						GetComponent<CapsuleCollider>().radius+0.5f) && 
+					hitinfo.collider.bounds.center.y + (hitinfo.collider.bounds.extents/2f).y -
+				   	(gameObject.GetComponent<Collider>().bounds.center.y - (gameObject.GetComponent<Collider>().bounds.extents/2f).y)
+				   	< 2.1f)
 			{
 				Debug.Log("Climb");
 				StartCoroutine( Climb(hitinfo) );
@@ -341,11 +347,11 @@ public class StealthCharacter : MonoBehaviour
 					GetComponent<CapsuleCollider>().height);
 				float time = 0f;
 				GetComponent<Rigidbody>().isKinematic = true;
-				while (time < m_RollTime )
+				while (time < StatsManager.GetStealthClimbTime() )
 				{
 					transform.position = Vector3.Lerp(
 					initialPosition, TopOfCollider,
-					time/m_RollTime);	
+					time/StatsManager.GetStealthClimbTime());	
 					time += Time.deltaTime;
 					yield return null;
 				}
@@ -405,8 +411,14 @@ public class StealthCharacter : MonoBehaviour
 		// this allows us to modify the positional speed before it's applied.
 		if (m_IsGrounded && Time.deltaTime > 0)
 		{
-			
-			Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
+			float mul;
+			if(m_Drag && m_ForwardAmount < 0){
+				mul = m_MoveSpeedMultiplier * 1.2f;
+			}	
+			else{
+				mul = m_MoveSpeedMultiplier;
+			}
+			Vector3 v = (m_Animator.deltaPosition * mul) / Time.deltaTime;
 			// we preserve the existing y part of the current velocity.
 			//Debug.Log(m_Animator.deltaPosition);
 			if(m_Constrained){

@@ -4,7 +4,7 @@ using System;
 
 public class VisionCone : MonoBehaviour
 {
-    [SerializeField] private string[]  tagsToSpot = {"Player", "Defeated"};
+    [SerializeField] private List<string> tagsToSpot;
     [SerializeField] private float radius = 10;
     [SerializeField] private float amplitude = 90;
     [SerializeField] private string occlusionLayer = "Walls";
@@ -20,7 +20,7 @@ public class VisionCone : MonoBehaviour
     private const bool DebugLogs = true; // show debug logs into Unity Editor's console
 
     #region Properties
-    public string[] TagToSpot
+    public List<string> TagToSpot
     {
         get { return tagsToSpot; }
         set
@@ -86,55 +86,50 @@ public class VisionCone : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // check if target is within radius
-		foreach(string tag in tagsToSpot)
-        {	
-            if (other.tag == tag)
+		if (tagsToSpot.Contains(other.tag))
+        {
+            // check if target is within the cone's angle
+            float angle = Vector3.Angle(transform.forward, other.transform.position - transform.position);
+            if (angle <= amplitude / 2f)
             {
-                // check if target is within the cone's angle
-                float angle = Vector3.Angle(transform.forward, other.transform.position - transform.position);
-                if (angle <= amplitude / 2f)
+                // check if target is not occluded
+                if (!Physics.Linecast(transform.position, other.transform.position, LayerMask.GetMask(occlusionLayer)))
                 {
-                    // check if target is not occluded
-                    if (!Physics.Linecast(transform.position, other.transform.position, LayerMask.GetMask(occlusionLayer)))
+                    // target is visible!
+                    if (!visibleTargets.Contains(other.gameObject))
                     {
-                        // target is visible!
-                        if (!visibleTargets.Contains(other.gameObject))
-                        {
-                            visibleTargets.Add(other.gameObject);
-                            OnVisionConeEnter(new VisionConeEventArgs(tag));
-                        }
-                        else
-                        {
-                            OnVisionConeStay(new VisionConeEventArgs(tag));
-                        }
+                        visibleTargets.Add(other.gameObject);
+                        OnVisionConeEnter(new VisionConeEventArgs(other.tag));
                     }
-                    else if (visibleTargets.Contains(other.gameObject))
+                    else
                     {
-                        visibleTargets.Remove(other.gameObject);
-                        OnVisionConeExit(new VisionConeEventArgs(tag));
+                        OnVisionConeStay(new VisionConeEventArgs(other.tag));
                     }
                 }
                 else if (visibleTargets.Contains(other.gameObject))
                 {
                     visibleTargets.Remove(other.gameObject);
-                    OnVisionConeExit(new VisionConeEventArgs(tag));
+                    OnVisionConeExit(new VisionConeEventArgs(other.tag));
                 }
-	        }
-        }
+            }
+            else if (visibleTargets.Contains(other.gameObject))
+            {
+                visibleTargets.Remove(other.gameObject);
+                OnVisionConeExit(new VisionConeEventArgs(other.tag));
+            }
+	    }
     }
 
     private void OnTriggerExit(Collider other)
     {
-		foreach(string tag in tagsToSpot){
-            if (other.tag == tag)
+		if (tagsToSpot.Contains(other.tag))
+        {
+            if (visibleTargets.Contains(other.gameObject))
             {
-                if (visibleTargets.Contains(other.gameObject))
-                {
-                    visibleTargets.Remove(other.gameObject);
-                    OnVisionConeExit(new VisionConeEventArgs(tag));
-                }
+                visibleTargets.Remove(other.gameObject);
+                OnVisionConeExit(new VisionConeEventArgs(tag));
             }
-		}
+        }
     }
 
     #region Events

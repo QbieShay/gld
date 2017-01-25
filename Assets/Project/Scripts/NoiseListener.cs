@@ -33,7 +33,7 @@ public class NoiseListener:MonoBehaviour{
 
 	bool forgetting;
 	void Update(){
-		//Debug.Log(currentAlert);
+		Debug.Log(currentAlert);
 		if(noiseInLastUpdate ==0f){
 			forgetting = true;
 		}

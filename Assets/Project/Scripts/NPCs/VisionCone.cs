@@ -86,25 +86,32 @@ public class VisionCone : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // check if target is within radius
-		foreach(string tag in tagsToSpot){	
-        if (other.tag == tag)
-        {
-            // check if target is within the cone's angle
-            float angle = Vector3.Angle(transform.forward, other.transform.position - transform.position);
-            if (angle <= amplitude / 2f)
+		foreach(string tag in tagsToSpot)
+        {	
+            if (other.tag == tag)
             {
-                // check if target is not occluded
-                if (!Physics.Linecast(transform.position, other.transform.position, LayerMask.GetMask(occlusionLayer)))
+                // check if target is within the cone's angle
+                float angle = Vector3.Angle(transform.forward, other.transform.position - transform.position);
+                if (angle <= amplitude / 2f)
                 {
-                    // target is visible!
-                    if (!visibleTargets.Contains(other.gameObject))
+                    // check if target is not occluded
+                    if (!Physics.Linecast(transform.position, other.transform.position, LayerMask.GetMask(occlusionLayer)))
                     {
-                        visibleTargets.Add(other.gameObject);
-                        OnVisionConeEnter(new VisionConeEventArgs(tag));
+                        // target is visible!
+                        if (!visibleTargets.Contains(other.gameObject))
+                        {
+                            visibleTargets.Add(other.gameObject);
+                            OnVisionConeEnter(new VisionConeEventArgs(tag));
+                        }
+                        else
+                        {
+                            OnVisionConeStay(new VisionConeEventArgs(tag));
+                        }
                     }
-                    else
+                    else if (visibleTargets.Contains(other.gameObject))
                     {
-                        OnVisionConeStay(new VisionConeEventArgs(tag));
+                        visibleTargets.Remove(other.gameObject);
+                        OnVisionConeExit(new VisionConeEventArgs(tag));
                     }
                 }
                 else if (visibleTargets.Contains(other.gameObject))
@@ -112,26 +119,21 @@ public class VisionCone : MonoBehaviour
                     visibleTargets.Remove(other.gameObject);
                     OnVisionConeExit(new VisionConeEventArgs(tag));
                 }
-            }
-            else if (visibleTargets.Contains(other.gameObject))
-            {
-                visibleTargets.Remove(other.gameObject);
-                OnVisionConeExit(new VisionConeEventArgs(tag));
-            }
-		}}
+	        }
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
 		foreach(string tag in tagsToSpot){
-        if (other.tag == tag)
-        {
-            if (visibleTargets.Contains(other.gameObject))
+            if (other.tag == tag)
             {
-                visibleTargets.Remove(other.gameObject);
-                OnVisionConeExit(new VisionConeEventArgs(tag));
+                if (visibleTargets.Contains(other.gameObject))
+                {
+                    visibleTargets.Remove(other.gameObject);
+                    OnVisionConeExit(new VisionConeEventArgs(tag));
+                }
             }
-        }
 		}
     }
 

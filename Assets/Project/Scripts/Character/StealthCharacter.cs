@@ -175,7 +175,7 @@ public class StealthCharacter : MonoBehaviour
 			if(m_Constrained){
 				m_ForwardAmount = m_ForwardAmount >0? Mathf.Clamp(m_ForwardAmount,0f,0.5f) : m_ForwardAmount*2f;
 			}
-			Debug.Log("Forward amount :" + m_ForwardAmount);
+			//Debug.Log("Forward amount :" + m_ForwardAmount);
             ApplyExtraTurnRotation();
         }
 

@@ -8,13 +8,14 @@ public class Claw : MeleeWeapon
     public Transform player;
     [Range(0, 2)]
     public float delay;
-
+    EnemyAttack attack;
+   
 
     public override void Hit()
     {
 
         StartCoroutine(WaitTime());
-
+        attack = GetComponent<EnemyAttack>();
 
     }
 
@@ -23,12 +24,13 @@ public class Claw : MeleeWeapon
         
         yield return new WaitForSeconds(delay);
         RaycastHit hit;
-        Debug.DrawRay(transform.position, transform.forward * 5f, Color.red, 5.0f);
-        if (Physics.Raycast(transform.position, transform.forward, out hit, range))
+        Debug.DrawRay(new Vector3(transform.position.x, 1.0f, transform.position.z), transform.forward * 5f, Color.red, 5.0f);
+        if (Physics.Raycast(new Vector3(transform.position.x,1.0f,transform.position.z), transform.forward, out hit, range))
         {
             if (hit.collider.gameObject.tag == "Player")
             {
-                Debug.Log("hit");
+                hit.collider.gameObject.GetComponent<Animator>().SetBool("Hit", true);
+                hit.collider.gameObject.GetComponent<HealthManager>().takeDamage(attack.meleeDamage);
             }
         }
 

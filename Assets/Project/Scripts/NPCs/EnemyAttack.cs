@@ -11,7 +11,10 @@ public class EnemyAttack : MonoBehaviour {
     bool attackMelee = false;
     bool attackRanged = false;
     public float SpeedRangedAttack;
+    public float rangedDamage;
     public float SpeedMeleeAttack;
+    public float meleeDamage;
+
 
     float time;
 

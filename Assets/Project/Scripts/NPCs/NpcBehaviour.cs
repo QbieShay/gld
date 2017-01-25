@@ -78,7 +78,7 @@ public class NpcBehaviour : MonoBehaviour
 
 
         }
-        Debug.Log("STATE: " + behaviour);
+        //Debug.Log("STATE: " + behaviour);
 
     }
 

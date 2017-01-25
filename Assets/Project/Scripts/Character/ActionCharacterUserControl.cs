@@ -23,6 +23,8 @@ public class ActionCharacterUserControl : MonoBehaviour
         float rightStickH = Input.GetAxis("Right Stick Horizontal");
         float rightStickV = Input.GetAxis("Right Stick Vertical");
 
+        bool dash=Input.GetButtonDown("Dash");
+
         if (Input.GetMouseButton(0))
         {
             Vector3 screenPos = Camera.main.WorldToScreenPoint(transform.position);
@@ -37,6 +39,8 @@ public class ActionCharacterUserControl : MonoBehaviour
             shoot = Vector2.zero;
         }
 
-        actionCharacter.Move(move, shoot);
+      
+
+        actionCharacter.Move(move, shoot,dash);
     }
 }

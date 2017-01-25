@@ -9,7 +9,8 @@ public class PlayerAttack : MonoBehaviour
     public GameObject bulletPrefab;
 
     public float meleeAttackRatio = 0.4f;
-    private float meleeDamage;
+    public float meleeDamage;
+    public float rangedDamage;
 
     private float shootTime = 0f;
     private float meleeTime = 0f;
@@ -17,6 +18,11 @@ public class PlayerAttack : MonoBehaviour
     private LightSaber lightsaber;
     private Riffle riffle;
     private Animator animator;
+   
+
+
+    float firingAngle = 45.0f;
+    float gravity = 9.8f;
 
     private void Start()
     {
@@ -44,6 +50,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void MeleeAttack()
     {
+
         if (meleeTime >= meleeAttackRatio)
         {
             meleeTime = 0f;
@@ -63,4 +70,22 @@ public class PlayerAttack : MonoBehaviour
     {
         return meleeDamage;
     }
+
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.tag == "Granade")
+        {
+            if (Input.GetButtonDown("Melee"))
+            {
+                Granade g = hit.gameObject.GetComponent<Granade>();
+                GameObject magnus = GameObject.FindGameObjectWithTag("Magnus");
+                g.picking(true);
+                g.shoot(magnus);
+            }
+        }
+           
+    }
+
+    
 }

@@ -19,7 +19,7 @@ public class CameraFollow : MonoBehaviour {
         rbToFollow = toFollow.GetComponent<Rigidbody>();
         if (!rbToFollow)
         {
-            Debug.LogWarning("Missing Rigidbody on CameraFollow: maxEasingFactor and speedForMaxEasingFactor will be ignored!");
+            //Debug.LogWarning("Missing Rigidbody on CameraFollow: maxEasingFactor and speedForMaxEasingFactor will be ignored!");
         }
     }
     
@@ -30,7 +30,7 @@ public class CameraFollow : MonoBehaviour {
             easingFactor = Mathf.Lerp(minEasingFactor, maxEasingFactor, rbToFollow.velocity.magnitude / speedForMaxEasingFactor);
         else
             easingFactor = minEasingFactor;
-		Debug.Log("To follow in camf is" + toFollow);
+		//Debug.Log("To follow in camf is" + toFollow);
         forwardDirection = toFollow.transform.forward;
         Vector3 dest = toFollow.transform.position + forwardDirection * forwardDistance + offset;
         transform.position = Vector3.Lerp(transform.position, dest, easingFactor * Time.deltaTime);

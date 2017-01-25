@@ -3,7 +3,7 @@ using System.Collections;
 
 public class ActionCharacter : MonoBehaviour
 {
-    public UnityEngine.UI.Text debugText;
+   
 
     public float speed = 3;
 
@@ -52,7 +52,7 @@ public class ActionCharacter : MonoBehaviour
             if (moveDirection.magnitude > 0.1f)
             {
                 float angle = Vector3.Angle(moveDirection, transform.forward);
-                debugText.text = angle.ToString();
+               
                 animator.SetFloat("Forward", 0);// Mathf.Cos(angle));
                 animator.SetFloat("Turn", 0);// Mathf.Sin(angle));
             }

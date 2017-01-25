@@ -29,7 +29,7 @@ public class StatsManager
     public static float GetHealth()
     {
         //TODO
-        return 100+level*25;
+        return 250+level*25;
     }
 
     public static float GetMeleeDamage(float weapon)

@@ -54,14 +54,14 @@ public class Jump : MonoBehaviour
             Airbone = true;
             */
             GetComponent<Animator>().SetBool("Jump", true);
-            GameObject target = GameObject.FindGameObjectWithTag("Player");
+            Vector3 target = GameObject.FindGameObjectWithTag("Player").transform.position;
             StartCoroutine(JumpTo(target));
             Airbone = true;
         }
    }
 
 
-    IEnumerator JumpTo(GameObject target)
+    IEnumerator JumpTo(Vector3 target)
     {
 
         // Short delay added before Projectile is thrown
@@ -72,7 +72,7 @@ public class Jump : MonoBehaviour
         //Granate.transform.position = myTransform.position + new Vector3(0, 0.0f, 0);
 
         // Calculate distance to target
-        float target_Distance = Vector3.Distance(transform.position, target.transform.position);
+        float target_Distance = Vector3.Distance(transform.position, target);
 
         // Calculate the velocity needed to throw the object to the target at specified angle.
         float projectile_Velocity = target_Distance / (Mathf.Sin(2 * firingAngle * Mathf.Deg2Rad) / gravity);
@@ -85,7 +85,7 @@ public class Jump : MonoBehaviour
         float flightDuration = target_Distance / Vx;
 
         // Rotate projectile to face the target.
-        transform.rotation = Quaternion.LookRotation(target.transform.position - transform.position);
+        transform.rotation = Quaternion.LookRotation(target - transform.position);
 
         float elapse_time = 0;
 

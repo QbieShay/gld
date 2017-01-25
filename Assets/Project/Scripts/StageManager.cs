@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StageManager : MonoBehaviour {
 
@@ -18,6 +19,7 @@ public class StageManager : MonoBehaviour {
   
     public float HealthStage2;
     public float HealthStage3;
+    public Text text;
 
     void Start ()
     {
@@ -34,6 +36,8 @@ public class StageManager : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+
+        text.text = "Stage:" + stage;
         
         if (stage == 1 && health.health < HealthStage2)
         {

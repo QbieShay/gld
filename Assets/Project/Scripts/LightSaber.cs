@@ -29,8 +29,8 @@ public class LightSaber : MeleeWeapon
 
         yield return new WaitForSeconds(delay);
         RaycastHit hit;
-        Debug.DrawRay(playerAttack.transform.position + playerAttack.transform.up * 0.5f, playerAttack.transform.forward, Color.red, 5.0f);
-        if (Physics.Raycast(playerAttack.transform.position + playerAttack.transform.up * 0.5f, playerAttack.transform.forward, out hit, range))
+        Debug.DrawRay(playerAttack.transform.position + playerAttack.transform.up * 1f, playerAttack.transform.forward, Color.red, 5.0f);
+        if (Physics.Raycast(playerAttack.transform.position + playerAttack.transform.up * 1f, playerAttack.transform.forward, out hit, range))
         {
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemies"))
             {

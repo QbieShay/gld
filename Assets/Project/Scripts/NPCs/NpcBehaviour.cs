@@ -41,47 +41,53 @@ public class NpcBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (dead)
+        if (!dead && playerTransform.gameObject.GetComponent<HealthManager>().health>0)
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("FinalCut");
+          
+
+            timer += Time.deltaTime;
+
+
+            switch (behaviour)
+            {
+                case "Melee":
+                    transform.rotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position);
+                    GetComponent<EnemyAttack>().MeleeAttack();
+
+                    break;
+
+                case "Ranged":
+                    transform.rotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position);
+                    GetComponent<EnemyAttack>().RangeAttack();
+                    break;
+
+                case "Search":
+                    obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(target.position);
+
+                    break;
+
+                case "Approach":
+                    //transform.rotation = Quaternion.LookRotation(new Vector3(targetSearch.position.x, transform.position.y, targetSearch.position.z) - transform.position);
+                    GetComponent<ApproachPlayer>().Approach();
+                    break;
+
+                case "Jump":
+                    //GetComponent<ApproachPlayer>().Approach();
+                    break;
+
+                default:
+                    break;
+
+
+            }
+            //Debug.Log("STATE: " + behaviour);
         }
-            
-        timer += Time.deltaTime;
-
-
-        switch (behaviour)
+        else
         {
-            case "Melee":
-                transform.rotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position);
-                GetComponent<EnemyAttack>().MeleeAttack();
 
-                break;
-
-            case "Ranged":
-                 transform.rotation = Quaternion.LookRotation(new Vector3(target.position.x,transform.position.y,target.position.z) - transform.position);
-                 GetComponent<EnemyAttack>().RangeAttack();
-                 break;
-
-            case "Search":
-                obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(target.position);
-               
-                break;
-
-            case "Approach":
-                //transform.rotation = Quaternion.LookRotation(new Vector3(targetSearch.position.x, transform.position.y, targetSearch.position.z) - transform.position);
-                GetComponent<ApproachPlayer>().Approach();
-                break;
-
-            case "Jump":
-                //GetComponent<ApproachPlayer>().Approach();
-                break;
-                
-            default:
-                break;
-
+            StartCoroutine(wait());
 
         }
-        //Debug.Log("STATE: " + behaviour);
 
     }
 
@@ -91,9 +97,15 @@ public class NpcBehaviour : MonoBehaviour
         target = t;
     }
 
-   
 
-  
- 
+    private IEnumerator wait()
+    {
+
+        yield return new WaitForSeconds(5.0f);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("FinalCut");
+
+    }
+
+
 
 }

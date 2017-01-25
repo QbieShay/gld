@@ -13,7 +13,7 @@ public class HealthManager : MonoBehaviour {
     void Start()
     {
         if(gameObject.tag=="Player")
-           health=StatsManager.GetHealth();
+           health=StatsManager.GetHealth(health);
     }
 
 

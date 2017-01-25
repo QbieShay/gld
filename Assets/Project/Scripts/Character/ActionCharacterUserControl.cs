@@ -28,6 +28,10 @@ public class ActionCharacterUserControl : MonoBehaviour
 
     private void Update()
     {
+
+        if (transform.position.y >= 0.5)
+            transform.position = new Vector3(transform.position.x, 0.2f, transform.position.z);
+
         if (!dead)
         {
 
@@ -60,7 +64,15 @@ public class ActionCharacterUserControl : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene("cava");
+            GetComponent<Animator>().SetBool("Die", true);
+            StartCoroutine(wait());
         }
+    }
+
+    private IEnumerator wait()
+    {
+        yield return new WaitForSeconds(5.0f);
+        SceneManager.LoadScene("cava");
+
     }
 }

@@ -26,17 +26,20 @@ public class StatsManager
 		return 1.0f;
 	}
 
-    public static float GetHealth()
+    public static float GetHealth(float health)
     {
         //TODO
-        return 250+level*25;
+        return health+level*25;
     }
 
     public static float GetMeleeDamage(float weapon)
     {
         //TODO
         Random rnd = new System.Random();
-        int d = rnd.Next(0, strenght);
+
+        if (strenght == 0)
+            strenght = 2;
+        int d = rnd.Next(1, strenght);
         return weapon + 2*strenght * d;
     }
 
@@ -44,7 +47,11 @@ public class StatsManager
     {
         //TODO
         Random rnd = new System.Random();
-        int d = rnd.Next(0, strenght/2);
+
+        if (dexterity == 0)
+            dexterity = 2;
+
+        int d = rnd.Next(1, dexterity/2);
         return weapon + dexterity * d;
     }
 

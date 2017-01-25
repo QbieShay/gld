@@ -14,6 +14,7 @@ public class Granade : MonoBehaviour {
     public float firingAngle = 45.0f;
     public float gravity = 9.8f;
     GameObject player;
+    bool playerIn;
 
     void Start ()
     {
@@ -29,7 +30,14 @@ public class Granade : MonoBehaviour {
         {
             time += Time.deltaTime;
             if (time >= explotionTime)
-                Destroy(gameObject);
+            {
+                if (playerIn)
+                {
+                    player.GetComponent<Animator>().SetBool("Hit", true);
+                    player.GetComponent<HealthManager>().takeDamage(damage);
+                }
+                    Destroy(gameObject);
+            }
         }
 	}
 
@@ -50,13 +58,34 @@ public class Granade : MonoBehaviour {
             Destroy(gameObject);
         }
 
-        if (other.gameObject.layer == LayerMask.NameToLayer("Defaulf"))
+        if (other.gameObject.layer == LayerMask.NameToLayer("Default"))
         {
             GetComponent<Rigidbody>().isKinematic = true;
         }
 
 
     }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            playerIn = true;
+        }
+
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            playerIn = false;
+        }
+
+    }
+
+
+
 
     public void shoot(GameObject p)
     {

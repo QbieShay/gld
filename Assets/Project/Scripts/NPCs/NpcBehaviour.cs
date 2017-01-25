@@ -16,6 +16,7 @@ public class NpcBehaviour : MonoBehaviour
     public float tresholdToTarget = 0.1f;
     private HealthManager healthManager;
     private bool dead = false;
+   
 
 
 
@@ -87,6 +88,7 @@ public class NpcBehaviour : MonoBehaviour
         target = t;
     }
 
+   
 
   
  

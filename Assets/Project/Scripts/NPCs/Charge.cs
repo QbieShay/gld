@@ -11,6 +11,7 @@ public class Charge : MonoBehaviour {
     Transform player;
     StageManager currentStage;
     ObstacleAvoidance obstacleAdvoidance;
+    HealthManager health;
 
 
     void Start ()
@@ -18,6 +19,7 @@ public class Charge : MonoBehaviour {
         obstacleAdvoidance = GetComponent<ObstacleAvoidance>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         currentStage = GetComponent<StageManager>();
+        health = GetComponent<HealthManager>();
     }
 	
 	// Update is called once per frame
@@ -35,6 +37,7 @@ public class Charge : MonoBehaviour {
                 obstacleAdvoidance.walkingSpeed = 2;
                 isCharge = false;
                 GetComponent<Animator>().SetBool("Charge", false);
+                health.SetInvunerable(false);
             }
 
         }
@@ -46,6 +49,7 @@ public class Charge : MonoBehaviour {
     {
         if (!isCharge)
         {
+            health.SetInvunerable(true);
             isCharge = true;
             GetComponent<Animator>().SetBool("Charge", true);
         }

@@ -10,15 +10,17 @@ public class ActionCharacter : MonoBehaviour
     private CharacterController characterController;
     private Animator animator;
     private PlayerAttack playerAttack;
+    private Dash dash;
 
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         playerAttack = GetComponent<PlayerAttack>();
+        dash = GetComponent<Dash>();
     }
 
-    public void Move(Vector2 move, Vector2 shoot)
+    public void Move(Vector2 move, Vector2 shoot,bool isDash)
     {
         Vector3 moveDirection = new Vector3(move.x, 0, move.y).normalized;
         characterController.Move(moveDirection * speed * Time.deltaTime);
@@ -58,6 +60,14 @@ public class ActionCharacter : MonoBehaviour
         {
             playerAttack.MeleeAttack();
         }
+
+        if (isDash)
+        {
+            dash.startDash();
+        }
+
+
+       
     }
 
     private void LookTowardsDirection(Vector3 direction, float rotationSpeed, float angleReachedThreshold)

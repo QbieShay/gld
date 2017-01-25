@@ -12,32 +12,37 @@ public class StageManager : MonoBehaviour {
     GameObject gl;
     GameObject riffle;
 
-
     Transform player;
     public int stage;
-    public float healthPercent;
-   
+    HealthManager health;
+  
+    public float HealthStage2;
+    public float HealthStage3;
+
     void Start ()
     {
         obstacleAdvoidance = GetComponent<ObstacleAvoidance>();
         behaviour = GetComponent<NpcBehaviour>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         riffle = GameObject.FindGameObjectWithTag("MagnusRiffle");
-
+        health = GetComponent<HealthManager>();
     }
+   
+
+  
 
     // Update is called once per frame
     void Update ()
     {
         
-        if (stage == 1 && healthPercent < 50f)
+        if (stage == 1 && health.health < HealthStage2)
         {
             stage = 2;
             StartStageTwo();
             
         }
 
-        if (stage == 2 && healthPercent < 10f)
+        if (stage == 2 && health.health < HealthStage3)
         {
             stage = 3;
             StartThree();
@@ -48,8 +53,11 @@ public class StageManager : MonoBehaviour {
 
     public void StartStageTwo()
     {
+        
+
         Debug.Log("Stage 2");
         setCircles(false);
+        health.SetInvunerable(true);
         GetComponent<NpcBehaviour>().setTargetSearch(WayPoint);
         GetComponent<NpcBehaviour>().behaviour = "Search";
     }
@@ -112,6 +120,9 @@ public class StageManager : MonoBehaviour {
         GetComponent<NpcBehaviour>().setTargetSearch(player);
         GetComponent<NpcBehaviour>().behaviour = "Ranged";
         EnableGranade();
+        health.SetInvunerable(false);
+
+
 
     }
 
@@ -167,6 +178,8 @@ public class StageManager : MonoBehaviour {
         riffle.SetActive(false);
       
     }
+
+   
 
     void setCircles(bool enable)
     {

@@ -10,11 +10,13 @@ public class EnemyEvade : MonoBehaviour
     private int probability;
     Animator animator;
     HealthManager health;
+ 
 
     void Start()
     {
         animator = GetComponent<Animator>();
         health = GetComponent<HealthManager>();
+        
     }
 
     public bool Evade(float damage)

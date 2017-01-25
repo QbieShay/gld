@@ -9,36 +9,48 @@ public class Granade : MonoBehaviour {
     float time;
     public float damage;
     bool flying;
-    
+    bool pick;
+
     public float firingAngle = 45.0f;
     public float gravity = 9.8f;
-    Transform player;
+    GameObject player;
 
     void Start ()
     {
         time = 0;
-        StartCoroutine(SimulateProjectile(gameObject));
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = GameObject.FindGameObjectWithTag("Player");
+        shoot(player);
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-        time += Time.deltaTime;
-        if (time >= explotionTime)
-            Destroy(gameObject);
+        if (!flying && !pick)
+        {
+            time += Time.deltaTime;
+            if (time >= explotionTime)
+                Destroy(gameObject);
+        }
 	}
 
     void OnCollisionEnter(Collision other)
     {
-        if (other.gameObject.tag == "Player" && flying)
+        if (other.gameObject.tag == "Player" && flying && !pick)
         {
+            other.gameObject.GetComponent<Animator>().SetBool("Hit", true);
             other.gameObject.GetComponent<HealthManager>().takeDamage(damage);
             Destroy(gameObject);
         }
     }
 
-    IEnumerator SimulateProjectile(GameObject granate)
+    public void shoot(GameObject p)
+    {
+        StartCoroutine(SimulateProjectile(gameObject, p.gameObject));
+    }
+
+
+
+    IEnumerator SimulateProjectile(GameObject granate,GameObject target)
     {
         flying = true;
         // Short delay added before Projectile is thrown
@@ -48,7 +60,7 @@ public class Granade : MonoBehaviour {
         //Granate.transform.position = myTransform.position + new Vector3(0, 0.0f, 0);
 
         // Calculate distance to target
-        float target_Distance = Vector3.Distance(granate.transform.position, player.position);
+        float target_Distance = Vector3.Distance(granate.transform.position,target.transform.position);
 
         // Calculate the velocity needed to throw the object to the target at specified angle.
         float projectile_Velocity = target_Distance / (Mathf.Sin(2 * firingAngle * Mathf.Deg2Rad) / gravity);
@@ -61,7 +73,7 @@ public class Granade : MonoBehaviour {
         float flightDuration = target_Distance / Vx;
 
         // Rotate projectile to face the target.
-        granate.transform.rotation = Quaternion.LookRotation(player.position - granate.transform.position);
+        granate.transform.rotation = Quaternion.LookRotation(target.transform.position - granate.transform.position);
 
         float elapse_time = 0;
 
@@ -73,7 +85,18 @@ public class Granade : MonoBehaviour {
 
             yield return null;
         }
+        GetComponent<Rigidbody>().isKinematic = true;
         flying = false;
     }
 
+
+    public bool isPick()
+    {
+        return pick;
+    }
+
+    public void picking(bool p)
+    {
+        pick = p;
+    }
 }

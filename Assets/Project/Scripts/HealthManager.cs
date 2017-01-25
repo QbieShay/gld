@@ -7,14 +7,17 @@ public class HealthManager : MonoBehaviour {
 
     // Use this for initialization
     public float health;
-
+    bool invulnerable;
     public event EventHandler Dead;
 
     public void takeDamage(float damage)
     {
-        health -= damage;
-        if (health <= 0)
-            OnDead(new EventArgs());
+        if (!invulnerable)
+        {
+            health -= damage;
+            if (health <= 0)
+                OnDead(new EventArgs());
+        }
     }
 
     protected virtual void OnDead(EventArgs e)
@@ -23,4 +26,15 @@ public class HealthManager : MonoBehaviour {
         if (handler != null)
             handler(this, e);
     }
+
+    public bool isInvulnerable()
+    {
+        return invulnerable;
+    }
+
+    public void SetInvunerable(bool v)
+    {
+        invulnerable = v;
+    }
+
 }

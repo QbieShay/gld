@@ -14,7 +14,9 @@ public class Riffle : RangedWeapon
     public override void Shoot()
     {
 
-        GameObject b = bullet.Spawn(bulletStart.position, bulletStart.rotation);//Instantiate(bullet, bulletStart.position, bulletStart.rotation);
+        GameObject b = bullet.Spawn(bulletStart.position, bulletStart.rotation);
+        b.GetComponent<Bullet>().setShooter(transform.parent.gameObject);
+        //Instantiate(bullet, bulletStart.position, bulletStart.rotation);
         Physics.IgnoreCollision(b.GetComponent<Collider>(), myTranform.GetComponent<Collider>());
         
 

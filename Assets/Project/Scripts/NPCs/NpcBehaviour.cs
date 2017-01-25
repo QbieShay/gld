@@ -16,6 +16,7 @@ public class NpcBehaviour : MonoBehaviour
     public float tresholdToTarget = 0.1f;
     private HealthManager healthManager;
     private bool dead = false;
+   
 
 
 
@@ -77,7 +78,7 @@ public class NpcBehaviour : MonoBehaviour
 
 
         }
-        Debug.Log("STATE: " + behaviour);
+        //Debug.Log("STATE: " + behaviour);
 
     }
 
@@ -87,6 +88,7 @@ public class NpcBehaviour : MonoBehaviour
         target = t;
     }
 
+   
 
   
  

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PipeActivableFinal : PipeActivable{
 	//FIXME porcata epica
@@ -13,24 +14,19 @@ public class PipeActivableFinal : PipeActivable{
 	void Start(){
 		//all = int.MaxValue;
 		all = ~0;
+	if(cratesInPosition == null){
+			cratesInPosition = new HashSet<GameObject>();
+		}
 	}
 
 	private static string scene = "null";
 	private static bool requestFocus= false;
-
-	private static int crates;
-	private static int cratesInPosition{
-		get{ return crates; }
-		set {
-			crates = value;
-		}
-	}
+	private static HashSet<GameObject> cratesInPosition;
 
 	public override void Activate(){
-		crates++;
-		Debug.Log( "Crates in position : "+crates);
-		if(crates == 3){
-			StartCoroutine( destroyWall());
+		cratesInPosition.Add(gameObject);
+		if (cratesInPosition.Count == 3){
+			StartCoroutine(destroyWall());
 		}
 	}
 	public override void Deactivate(){
@@ -41,7 +37,7 @@ public class PipeActivableFinal : PipeActivable{
 				return;
 			}
 		}
-		crates --;
+		cratesInPosition.Remove(gameObject);
 	}
 
 	IEnumerator destroyWall(){

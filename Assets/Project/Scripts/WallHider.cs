@@ -16,7 +16,7 @@ public class WallHider : MonoBehaviour{
 
 	void Update(){
 		RaycastHit[] hits = Physics.RaycastAll(transform.position, dass.transform.position - transform.position,
-				Vector3.Distance(dass.transform.position, transform.position), LayerMask.GetMask("Walls"));
+				Vector3.Distance(dass.transform.position, transform.position));
 		HashSet<HidableWall> toDisable = new HashSet<HidableWall>();
 		foreach( RaycastHit hit in hits){
 			HidableWall wall = hit.collider.gameObject.GetComponent<HidableWall>();

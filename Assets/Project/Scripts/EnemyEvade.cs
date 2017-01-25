@@ -26,7 +26,7 @@ public class EnemyEvade : MonoBehaviour
             if (!health.isInvulnerable())
             {
                 probability = Random.Range(1, diceEvade);
-                if (probability > minimumRoll)
+                if (probability > minimumRoll && GetComponentInParent<StageManager>().stage!=2)
                 {
                     Debug.Log("evade");
                     return true;
@@ -45,7 +45,6 @@ public class EnemyEvade : MonoBehaviour
         }
         else
         {
-            animator.SetBool("Dead", true);
             return false;
         }
     }

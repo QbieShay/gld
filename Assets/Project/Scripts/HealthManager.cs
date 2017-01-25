@@ -10,10 +10,18 @@ public class HealthManager : MonoBehaviour {
     bool invulnerable;
     public event EventHandler Dead;
 
+    void Start()
+    {
+        if(gameObject.tag=="Player")
+           health=StatsManager.GetHealth();
+    }
+
+
     public void takeDamage(float damage)
     {
         if (!invulnerable)
         {
+            Debug.Log(gameObject.tag + " take " + damage + " of damage");
             health -= damage;
             if (health <= 0)
                 OnDead(new EventArgs());

@@ -21,6 +21,7 @@ public class FirstCutFlow : MonoBehaviour {
 	}
 
 	void LoadNextScene(){
+        
 		UnityEngine.SceneManagement.SceneManager.LoadScene("Foundry_1_2");
 	}
 }

@@ -59,12 +59,16 @@ public class StageManager : MonoBehaviour {
         setCircles(false);
         health.SetInvunerable(true);
         GetComponent<NpcBehaviour>().setTargetSearch(WayPoint);
+        GetComponent<Animator>().SetBool(GetComponent<NpcBehaviour>().behaviour, false);
         GetComponent<NpcBehaviour>().behaviour = "Search";
+        GetComponent<Animator>().SetBool("Search", true);
+
     }
 
     public void StartThree()
     {
         GetComponent<NpcBehaviour>().behaviour = "Jump";
+        GetComponent<Animator>().SetBool("Ranged", false);
         GameObject target = GameObject.FindGameObjectWithTag("WpDown");
         StartCoroutine(GetOffKart(target));
     }
@@ -74,7 +78,9 @@ public class StageManager : MonoBehaviour {
     {
         if (other.gameObject.tag == "WpDown" && stage==2)
         {
+            riffle.SetActive(false);
             GetComponent<NpcBehaviour>().behaviour = "Jump";
+            GetComponent<Animator>().SetBool("Search", false);
             StartCoroutine(GetOnKart(GameObject.FindGameObjectWithTag("WpTop")));
 
         }
@@ -173,9 +179,10 @@ public class StageManager : MonoBehaviour {
     void EnableGranade()
     {
         Debug.Log("ENABLE GRANADE");
+       
         gl = Instantiate(granate_launcher, riffle.transform.position, riffle.transform.rotation);
         gl.transform.parent = riffle.transform.parent;
-        riffle.SetActive(false);
+       
       
     }
 

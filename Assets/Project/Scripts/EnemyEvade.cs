@@ -23,21 +23,25 @@ public class EnemyEvade : MonoBehaviour
     {
         if (health.health > 0)
         {
-            probability = Random.Range(1, diceEvade);
-            if (probability > minimumRoll)
+            if (!health.isInvulnerable())
             {
-                Debug.Log("evade");
-                return true;
-            }
-            else
-            {
-                if (!animator.GetCurrentAnimatorStateInfo(0).IsName("getHit"))
+                probability = Random.Range(1, diceEvade);
+                if (probability > minimumRoll)
                 {
-                    animator.SetBool("isHit", true);
+                    Debug.Log("evade");
+                    return true;
                 }
-                health.takeDamage(damage);
-                return false;
+                else
+                {
+                    if (!animator.GetCurrentAnimatorStateInfo(0).IsName("getHit"))
+                    {
+                        animator.SetBool("isHit", true);
+                    }
+                    health.takeDamage(damage);
+                    return false;
+                }
             }
+            return false;
         }
         else
         {

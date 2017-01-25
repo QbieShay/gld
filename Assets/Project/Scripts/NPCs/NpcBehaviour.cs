@@ -42,7 +42,10 @@ public class NpcBehaviour : MonoBehaviour
     void Update()
     {
         if (dead)
-            return;
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("FinalCut");
+        }
+            
         timer += Time.deltaTime;
 
 

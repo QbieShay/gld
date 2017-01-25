@@ -9,8 +9,12 @@ public class PlayerAttack : MonoBehaviour
     public GameObject bulletPrefab;
 
     public float meleeAttackRatio = 0.4f;
-    public float meleeDamage;
-    public float rangedDamage;
+    public float weaponMeleeDamage;
+    public float weaponRangedDamage;
+
+    float meleeDamage;
+    float rangedDamage;
+
 
     private float shootTime = 0f;
     private float meleeTime = 0f;
@@ -26,12 +30,20 @@ public class PlayerAttack : MonoBehaviour
 
     private void Start()
     {
-        meleeDamage = 5f; // TODO: get from stats
+        meleeDamage = StatsManager.GetMeleeDamage(weaponMeleeDamage); // TODO: get from stats
+        rangedDamage = StatsManager.GetRangeDamage(weaponRangedDamage);
 
         lightsaber = GetComponentInChildren<LightSaber>();
         riffle = GetComponentInChildren<Riffle>();
         animator = GetComponent<Animator>();
     }
+
+    public float getRangedDamage()
+    {
+        return rangedDamage;
+    }
+
+ 
 
     private void Update()
     {
@@ -80,6 +92,7 @@ public class PlayerAttack : MonoBehaviour
             {
                 Granade g = hit.gameObject.GetComponent<Granade>();
                 GameObject magnus = GameObject.FindGameObjectWithTag("Magnus");
+                
                 g.picking(true);
                 g.shoot(magnus);
             }

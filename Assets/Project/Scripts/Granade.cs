@@ -41,6 +41,21 @@ public class Granade : MonoBehaviour {
             other.gameObject.GetComponent<HealthManager>().takeDamage(damage);
             Destroy(gameObject);
         }
+
+        if (other.gameObject.tag == "Magnus" && pick)
+        {
+            Debug.Log("HITTTTTTTTTTTTT");
+            other.gameObject.GetComponent<Animator>().SetBool("isHit", true);
+            other.gameObject.GetComponent<EnemyEvade>().Evade(damage);
+            Destroy(gameObject);
+        }
+
+        if (other.gameObject.layer == LayerMask.NameToLayer("Defaulf"))
+        {
+            GetComponent<Rigidbody>().isKinematic = true;
+        }
+
+
     }
 
     public void shoot(GameObject p)
@@ -53,6 +68,7 @@ public class Granade : MonoBehaviour {
     IEnumerator SimulateProjectile(GameObject granate,GameObject target)
     {
         flying = true;
+        GetComponent<Rigidbody>().isKinematic = false;
         // Short delay added before Projectile is thrown
         yield return new WaitForSeconds(1.5f);
 
@@ -85,7 +101,7 @@ public class Granade : MonoBehaviour {
 
             yield return null;
         }
-        GetComponent<Rigidbody>().isKinematic = true;
+        
         flying = false;
     }
 

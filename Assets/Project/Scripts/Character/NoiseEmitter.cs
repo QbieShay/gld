@@ -50,7 +50,7 @@ public class NoiseEmitter : MonoBehaviour{
 			float distance = Vector3.Distance(transform.position, 
 					c.gameObject.transform.position);
 			//Roll noise is a fixed value, cannot be cut by stealthing.
-			noise *=GetFalloff(distance,radius);
+			noise = (noise - MinNoise)*GetFalloff(distance,radius);
 			NoiseListener listener = c.gameObject.GetComponent<NoiseListener>();
 			if(listener != null){
 				listener.ReciveNoiseOnce(transform.position, noise);

@@ -122,7 +122,7 @@ public class PatrollingGuard : MonoBehaviour
         // root-level state machine
         State stateUnderMindTrickAttempt = new State("Under Mind Trick attempt", null, null, null);
         State stateSpot = new State("Spot", ActionSpotPlayer, null, null);
-        State stateGiveAlarm = new State("Give alarm", null, null, null);
+        State stateGiveAlarm = new State("Give alarm", ActionGiveAlarm, null, null);
         State stateKo = new State("KO", ActionPutKo, null, null);
         State stateDead = new State("Dead", ActionDie, null, null);
         stateMachine = new StateMachine("State Machine", stateAlive, null, null, null);
@@ -232,13 +232,12 @@ public class PatrollingGuard : MonoBehaviour
 
     private bool ConditionSeesPlayer()
     {
-		//FIXME huehuehuehuehueheuheue
-        return playerSeen || otherSeen;
+		return playerSeen;
     }
 
     private bool ConditionSeesNpcStunnedKoDead()
     {
-        return false;
+        return otherSeen;
     }
 
     private bool ConditionSeesCrateOutOfPlace()
@@ -365,6 +364,12 @@ public class PatrollingGuard : MonoBehaviour
             MoveCamera(targetPosition, targetRotation, 1);
             StartCoroutine(RestartLevelAfterSeconds(2f));
         }));
+    }
+
+    private void ActionGiveAlarm()
+    {
+        // TODO: animation
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     #endregion

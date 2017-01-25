@@ -71,11 +71,12 @@ public class PatrollingGuard : MonoBehaviour
 
     private void VisionCone_VisionConeEnter(object sender, VisionConeEventArgs e)
     {
+        Debug.Log("VisionConeEnter: tag: " + e.Tag);
 		if(e.Tag == "Player")
 		{
         	playerSeen = true;
 		}
-		if(e.Tag == "Defeated")
+		else if(e.Tag == "Defeated")
 		{
 			otherSeen = true;
 		}

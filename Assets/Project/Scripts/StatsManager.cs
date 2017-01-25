@@ -13,7 +13,7 @@ public class StatsManager
 		return 0.4f + 0.02f * (float) strenght;
 	}
 	public static float GetStealthNoiseRadius(){
-		return 4f - 0.2f * (float) dexterity;
+		return 10f - 0.5f * (float) dexterity;
 	}
 	public static float GetStealthClimbTime(){
 		return 0.5f - 0.02f * (float)dexterity;

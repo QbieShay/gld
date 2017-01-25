@@ -25,6 +25,11 @@ public class ObstacleAvoidance : MonoBehaviour
     /// doing it when the direction differs of this value (degrees).
     /// </summary>
     public float angleReachedThreshold = 3;
+    public float centerRayLength = 3;
+    public float slightlyOffsetRayLength = 2;
+    public float slightlyOffsetRayAngle = 10;
+    public float veryOffsetRayLength = 1;
+    public float veryOffsetRayAngle = 30;
 
     private CharacterController characterController;
     private Animator animator;
@@ -46,12 +51,6 @@ public class ObstacleAvoidance : MonoBehaviour
     /// 0 if the center ray hit.</returns>
     private int? CheckForWalls(Vector3 direction)
     {
-        float centerRayLength = 3;
-        float slightlyOffsetRayLength = 2;
-        float slightlyOffsetRayAngle = 10;
-        float veryOffsetRayLength = 1;
-        float veryOffsetRayAngle = 30;
-
         Color c = Color.green;
         bool hit = false;
 

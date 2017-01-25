@@ -49,7 +49,10 @@ public class GasPipe : MonoBehaviour{
 	//}
 	void OnTriggerEnter(Collider collision){
 		if(collision.gameObject.CompareTag("Player")){
+			RaycastHit hit;
+	
 	        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+			
 		}
 		PipeActivable switchable = collision.gameObject.GetComponent<PipeActivable>();
 		if(switchable != null){

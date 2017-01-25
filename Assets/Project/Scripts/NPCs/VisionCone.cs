@@ -4,7 +4,7 @@ using System;
 
 public class VisionCone : MonoBehaviour
 {
-    [SerializeField] private string tagToSpot = "Player";
+    [SerializeField] private string[]  tagsToSpot = {"Player", "Defeated"};
     [SerializeField] private float radius = 10;
     [SerializeField] private float amplitude = 90;
     [SerializeField] private string occlusionLayer = "Walls";
@@ -13,21 +13,21 @@ public class VisionCone : MonoBehaviour
 
     private SphereCollider coll;
 
-    public event EventHandler VisionConeEnter;
-    public event EventHandler VisionConeStay;
-    public event EventHandler VisionConeExit;
+    public event EventHandler<VisionConeEventArgs> VisionConeEnter;
+    public event EventHandler<VisionConeEventArgs> VisionConeStay;
+    public event EventHandler<VisionConeEventArgs> VisionConeExit;
 
     private const bool DebugLogs = true; // show debug logs into Unity Editor's console
 
     #region Properties
-    public string TagToSpot
+    public string[] TagToSpot
     {
-        get { return tagToSpot; }
+        get { return tagsToSpot; }
         set
         {
-            if (value != tagToSpot)
+            if (value != tagsToSpot)
             {
-                tagToSpot = value;
+                tagsToSpot = value;
             }
         }
     }
@@ -86,7 +86,8 @@ public class VisionCone : MonoBehaviour
     private void OnTriggerStay(Collider other)
     {
         // check if target is within radius
-        if (other.tag == tagToSpot)
+		foreach(string tag in tagsToSpot){	
+        if (other.tag == tag)
         {
             // check if target is within the cone's angle
             float angle = Vector3.Angle(transform.forward, other.transform.position - transform.position);
@@ -99,44 +100,46 @@ public class VisionCone : MonoBehaviour
                     if (!visibleTargets.Contains(other.gameObject))
                     {
                         visibleTargets.Add(other.gameObject);
-                        OnVisionConeEnter(new EventArgs());
+                        OnVisionConeEnter(new VisionConeEventArgs(tag));
                     }
                     else
                     {
-                        OnVisionConeStay(new EventArgs());
+                        OnVisionConeStay(new VisionConeEventArgs(tag));
                     }
                 }
                 else if (visibleTargets.Contains(other.gameObject))
                 {
                     visibleTargets.Remove(other.gameObject);
-                    OnVisionConeExit(new EventArgs());
+                    OnVisionConeExit(new VisionConeEventArgs(tag));
                 }
             }
             else if (visibleTargets.Contains(other.gameObject))
             {
                 visibleTargets.Remove(other.gameObject);
-                OnVisionConeExit(new EventArgs());
+                OnVisionConeExit(new VisionConeEventArgs(tag));
             }
-        }
+		}}
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == tagToSpot)
+		foreach(string tag in tagsToSpot){
+        if (other.tag == tag)
         {
             if (visibleTargets.Contains(other.gameObject))
             {
                 visibleTargets.Remove(other.gameObject);
-                OnVisionConeExit(new EventArgs());
+                OnVisionConeExit(new VisionConeEventArgs(tag));
             }
         }
+		}
     }
 
     #region Events
 
-    protected virtual void OnVisionConeEnter(EventArgs e)
+    protected virtual void OnVisionConeEnter(VisionConeEventArgs e)
     {
-        EventHandler handler = VisionConeEnter;
+        EventHandler<VisionConeEventArgs> handler = VisionConeEnter;
         if (handler != null)
             handler(this, e);
 
@@ -144,9 +147,9 @@ public class VisionCone : MonoBehaviour
             Debug.Log("OnVisionConeEnter");
     }
 
-    protected virtual void OnVisionConeStay(EventArgs e)
+    protected virtual void OnVisionConeStay(VisionConeEventArgs e)
     {
-        EventHandler handler = VisionConeStay;
+        EventHandler<VisionConeEventArgs> handler = VisionConeStay;
         if (handler != null)
             handler(this, e);
 
@@ -154,9 +157,9 @@ public class VisionCone : MonoBehaviour
             Debug.Log("OnVisionConeStay");
     }
 
-    protected virtual void OnVisionConeExit(EventArgs e)
+    protected virtual void OnVisionConeExit(VisionConeEventArgs e)
     {
-        EventHandler handler = VisionConeExit;
+        EventHandler<VisionConeEventArgs> handler = VisionConeExit;
         if (handler != null)
             handler(this, e);
 
@@ -165,4 +168,14 @@ public class VisionCone : MonoBehaviour
     }
 
     #endregion
+}
+public class VisionConeEventArgs : EventArgs {
+	public string Tag{
+		get;
+		private set;
+	}
+
+	public VisionConeEventArgs(string tag){
+		Tag = tag;
+	}
 }

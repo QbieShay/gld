@@ -36,6 +36,7 @@ public class PatrollingGuard : MonoBehaviour
     private Vector3 noiseSourcePosition;
     private bool lookCarefullyTimeEnded = false;
     private bool playerSeen = false;
+	private bool otherSeen = false;
 
     private CharacterController characterController;
     private Animator animator;
@@ -68,9 +69,16 @@ public class PatrollingGuard : MonoBehaviour
         InitStateMachine();
     }
 
-    private void VisionCone_VisionConeEnter(object sender, EventArgs e)
+    private void VisionCone_VisionConeEnter(object sender, VisionConeEventArgs e)
     {
-        playerSeen = true;
+		if(e.Tag == "Player")
+		{
+        	playerSeen = true;
+		}
+		if(e.Tag == "Defeated")
+		{
+			otherSeen = true;
+		}
     }
 
     private void NoiseListener_Alert(object sender, AlertEventArgs e)
@@ -223,7 +231,8 @@ public class PatrollingGuard : MonoBehaviour
 
     private bool ConditionSeesPlayer()
     {
-        return playerSeen;
+		//FIXME huehuehuehuehueheuheue
+        return playerSeen || otherSeen;
     }
 
     private bool ConditionSeesNpcStunnedKoDead()

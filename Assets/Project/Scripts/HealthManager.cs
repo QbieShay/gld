@@ -9,11 +9,21 @@ public class HealthManager : MonoBehaviour {
     public float health;
     bool invulnerable;
     public event EventHandler Dead;
+    private float maxHealth;
+    
 
     void Start()
     {
         if(gameObject.tag=="Player")
            health=StatsManager.GetHealth(health);
+
+        maxHealth = health;
+    }
+
+
+    public float getMaxHealth()
+    {
+        return maxHealth;
     }
 
 

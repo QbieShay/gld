@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Granade : MonoBehaviour {
+public class Granade : MonoBehaviour
+{
 
-	// Use this for initialization
+    // Use this for initialization
     public float explotionTime;
     float time;
     public float damage;
@@ -15,31 +16,41 @@ public class Granade : MonoBehaviour {
     public float gravity = 9.8f;
     GameObject player;
     bool playerIn;
+    Light light;
+    bool changeColor;
 
-    void Start ()
+
+    void Start()
     {
         time = 0;
         player = GameObject.FindGameObjectWithTag("Player");
         shoot(player);
+        light = GetComponent<Light>();
+
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
+        if (!changeColor)
+            StartCoroutine(ChangeColor());
+
         if (!flying && !pick)
         {
             time += Time.deltaTime;
+
             if (time >= explotionTime)
             {
+                
                 if (playerIn)
                 {
                     player.GetComponent<Animator>().SetBool("Hit", true);
                     player.GetComponent<HealthManager>().takeDamage(damage);
                 }
-                    Destroy(gameObject);
+                Destroy(gameObject);
             }
         }
-	}
+    }
 
     void OnCollisionEnter(Collision other)
     {
@@ -94,7 +105,7 @@ public class Granade : MonoBehaviour {
 
 
 
-    IEnumerator SimulateProjectile(GameObject granate,GameObject target)
+    IEnumerator SimulateProjectile(GameObject granate, GameObject target)
     {
         flying = true;
         GetComponent<Rigidbody>().isKinematic = false;
@@ -105,7 +116,7 @@ public class Granade : MonoBehaviour {
         //Granate.transform.position = myTransform.position + new Vector3(0, 0.0f, 0);
 
         // Calculate distance to target
-        float target_Distance = Vector3.Distance(granate.transform.position,target.transform.position);
+        float target_Distance = Vector3.Distance(granate.transform.position, target.transform.position);
 
         // Calculate the velocity needed to throw the object to the target at specified angle.
         float projectile_Velocity = target_Distance / (Mathf.Sin(2 * firingAngle * Mathf.Deg2Rad) / gravity);
@@ -130,7 +141,7 @@ public class Granade : MonoBehaviour {
 
             yield return null;
         }
-        
+
         flying = false;
     }
 
@@ -143,5 +154,18 @@ public class Granade : MonoBehaviour {
     public void picking(bool p)
     {
         pick = p;
+    }
+
+
+    IEnumerator ChangeColor()
+    {
+        Debug.Log("red");
+        changeColor = true;
+        light.color = Color.red;
+        yield return new WaitForSeconds(0.5f);
+        light.color = Color.yellow;
+        yield return new WaitForSeconds(0.3f);
+        changeColor = false;
+        Debug.Log("blue");
     }
 }

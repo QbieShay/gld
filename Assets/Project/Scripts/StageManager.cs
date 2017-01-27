@@ -16,19 +16,25 @@ public class StageManager : MonoBehaviour {
     Transform player;
     public int stage;
     HealthManager health;
-  
+
+    public float HealthStage1;
     public float HealthStage2;
     public float HealthStage3;
+    float maxHealth;
     public Text text;
 
-    void Start ()
+    void Start()
     {
         obstacleAdvoidance = GetComponent<ObstacleAvoidance>();
         behaviour = GetComponent<NpcBehaviour>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         riffle = GameObject.FindGameObjectWithTag("MagnusRiffle");
         health = GetComponent<HealthManager>();
+ 
     }
+
+
+
    
 
   
@@ -37,7 +43,7 @@ public class StageManager : MonoBehaviour {
     void Update ()
     {
 
-        text.text = "Stage:" + stage;
+        //text.text = "Stage:" + stage;
         
         if (stage == 1 && health.health < HealthStage2)
         {

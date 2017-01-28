@@ -18,6 +18,7 @@ public class Granade : MonoBehaviour
     bool playerIn;
     Light light;
     bool changeColor;
+    public GameObject explotion;
 
 
     void Start()
@@ -47,6 +48,7 @@ public class Granade : MonoBehaviour
                     player.GetComponent<Animator>().SetBool("Hit", true);
                     player.GetComponent<HealthManager>().takeDamage(damage);
                 }
+                Instantiate(explotion, transform.position, transform.rotation);
                 Destroy(gameObject);
             }
         }
@@ -58,6 +60,7 @@ public class Granade : MonoBehaviour
         {
             other.gameObject.GetComponent<Animator>().SetBool("Hit", true);
             other.gameObject.GetComponent<HealthManager>().takeDamage(damage);
+            Instantiate(explotion, transform.position, transform.rotation);
             Destroy(gameObject);
         }
 
@@ -66,6 +69,7 @@ public class Granade : MonoBehaviour
             Debug.Log("HITTTTTTTTTTTTT");
             other.gameObject.GetComponent<Animator>().SetBool("isHit", true);
             other.gameObject.GetComponent<EnemyEvade>().Evade(damage);
+            Instantiate(explotion, transform.position, transform.rotation);
             Destroy(gameObject);
         }
 

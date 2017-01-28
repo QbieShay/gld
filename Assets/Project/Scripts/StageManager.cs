@@ -68,6 +68,7 @@ public class StageManager : MonoBehaviour {
         Debug.Log("Stage 2");
         setCircles(false);
         health.SetInvunerable(true);
+        ZoomOutCam();
         GetComponent<NpcBehaviour>().setTargetSearch(WayPoint);
         GetComponent<Animator>().SetBool(GetComponent<NpcBehaviour>().behaviour, false);
         GetComponent<NpcBehaviour>().behaviour = "Search";
@@ -75,9 +76,20 @@ public class StageManager : MonoBehaviour {
 
     }
 
+    void ZoomOutCam()
+    {
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraFollow>().offset.y = 12;
+    }
+
+    void ZoomInCam()
+    {
+        GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraFollow>().offset.y = 7;
+    }
+
     public void StartThree()
     {
         GetComponent<NpcBehaviour>().behaviour = "Jump";
+        ZoomInCam();
         GetComponent<Animator>().SetBool("Ranged", false);
         GameObject target = GameObject.FindGameObjectWithTag("WpDown");
         StartCoroutine(GetOffKart(target));

@@ -30,6 +30,7 @@ public class SecurityCamera : MonoBehaviour
     private bool waypointReached = false;
     private bool waitTimeEnded = false;
     private bool spot = false;
+    private Tween tween;
 
     private VisionCone visionCone;
 
@@ -66,7 +67,7 @@ public class SecurityCamera : MonoBehaviour
         stateWait.TopLevel = statePatrol;
 
         // root-level state machine
-        State stateSpot = new State("Spot", null, null, null);
+        State stateSpot = new State("Spot", ActionSpot, null, null);
         stateMachine = new StateMachine("State Machine", statePatrol, null, null, null);
         stateSpot.TopLevel = stateMachine;
 
@@ -113,7 +114,7 @@ public class SecurityCamera : MonoBehaviour
         waypointReached = false;
 
         Vector3 destPos = path[pathIndex].waypoint.position;
-        DOTween.To(() => transform.position, x => transform.position = x, destPos, movementDuration)
+        tween = DOTween.To(() => transform.position, x => transform.position = x, destPos, movementDuration)
             .SetEase(ease)
             .OnComplete(WaypointReached);
     }
@@ -126,7 +127,7 @@ public class SecurityCamera : MonoBehaviour
 
     private void ActionSpot()
     {
-        DOTween.PauseAll();
+        tween.Pause();
     }
 
     #endregion

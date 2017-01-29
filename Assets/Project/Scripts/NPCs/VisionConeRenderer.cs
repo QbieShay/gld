@@ -67,4 +67,16 @@ public class VisionConeRenderer : MonoBehaviour
         }
         visualCone.vertices = vertices;
     }
+
+    private void OnBecameInvisible()
+    {
+        if (enabled)
+            enabled = false;
+    }
+
+    private void OnBecameVisible()
+    {
+        if (!enabled)
+            enabled = true;
+    }
 }

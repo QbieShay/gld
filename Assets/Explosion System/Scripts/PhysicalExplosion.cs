@@ -7,6 +7,7 @@ public class PhysicalExplosion : MonoBehaviour
     public float Force;// explosion forse
     void Update () 
     {
+        
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, Radius);// create explosion
         for(int i=0; i<hitColliders.Length; i++)
         {              
@@ -21,10 +22,12 @@ public class PhysicalExplosion : MonoBehaviour
 			
         }
         Destroy(gameObject,0.2f);// destroy explosion
+        
     }
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position,Radius);
     }
+
 }

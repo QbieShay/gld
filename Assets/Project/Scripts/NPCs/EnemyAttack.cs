@@ -33,8 +33,10 @@ public class EnemyAttack : MonoBehaviour {
                 probability = Random.Range(1, diceInitiative);
                 if (probability > minimumRoll)
                 {
-                    GetComponentInChildren<RangedWeapon>().Shoot();
-                    
+                    if (GetComponentInChildren<RangedWeapon>() != null)
+                    {
+                        GetComponentInChildren<RangedWeapon>().Shoot();
+                    }
                 }
                 attackRanged = false;
                 time = 0;

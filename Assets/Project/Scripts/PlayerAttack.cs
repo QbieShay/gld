@@ -88,11 +88,12 @@ public class PlayerAttack : MonoBehaviour
     {
         if (hit.gameObject.tag == "Granade")
         {
-            if (Input.GetButtonDown("Melee"))
+            Granade g = hit.gameObject.GetComponent<Granade>();
+
+            if (Input.GetButtonDown("Melee") && !g.isPick())
             {
-                Granade g = hit.gameObject.GetComponent<Granade>();
+               
                 GameObject magnus = GameObject.FindGameObjectWithTag("Magnus");
-                
                 g.picking(true);
                 g.shoot(magnus);
             }

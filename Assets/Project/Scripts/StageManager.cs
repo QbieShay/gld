@@ -68,9 +68,11 @@ public class StageManager : MonoBehaviour {
         Debug.Log("Stage 2");
         setCircles(false);
         health.SetInvunerable(true);
+        riffle.SetActive(false);
+        GetComponent<Animator>().SetBool(GetComponent<NpcBehaviour>().behaviour, false);
         ZoomOutCam();
         GetComponent<NpcBehaviour>().setTargetSearch(WayPoint);
-        GetComponent<Animator>().SetBool(GetComponent<NpcBehaviour>().behaviour, false);
+        
         GetComponent<NpcBehaviour>().behaviour = "Search";
         GetComponent<Animator>().SetBool("Search", true);
 
@@ -100,7 +102,7 @@ public class StageManager : MonoBehaviour {
     {
         if (other.gameObject.tag == "WpDown" && stage==2)
         {
-            riffle.SetActive(false);
+            
             GetComponent<NpcBehaviour>().behaviour = "Jump";
             GetComponent<Animator>().SetBool("Search", false);
             StartCoroutine(GetOnKart(GameObject.FindGameObjectWithTag("WpTop")));

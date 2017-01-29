@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System;
@@ -33,11 +34,13 @@ public class SecurityCamera : MonoBehaviour
     private Tween tween;
 
     private VisionCone visionCone;
+    private GameObject player;
 
     private void Start()
     {
         visionCone = GetComponentInChildren<VisionCone>();
         visionCone.VisionConeEnter += VisionCone_VisionConeEnter;
+        player = GameObject.FindGameObjectWithTag("Player");
 
         // if there are no waypoints, automatically add one at NPC's position
         if (path.Length == 0)
@@ -128,6 +131,8 @@ public class SecurityCamera : MonoBehaviour
     private void ActionSpot()
     {
         tween.Pause();
+        player.GetComponent<StealthCharacterUserControl>().enabled = false;
+        StartCoroutine(RestartLevelAfterSeconds(2f));
     }
 
     #endregion
@@ -169,5 +174,11 @@ public class SecurityCamera : MonoBehaviour
     {
         yield return new WaitForSeconds(seconds);
         waitTimeEnded = true;
+    }
+
+    private IEnumerator RestartLevelAfterSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

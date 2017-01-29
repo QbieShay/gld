@@ -24,7 +24,7 @@ public class Claw : MeleeWeapon
         
         yield return new WaitForSeconds(delay);
         RaycastHit hit;
-        Debug.DrawRay(new Vector3(transform.position.x, 1.0f, transform.position.z), transform.forward * 5f, Color.red, 5.0f);
+        Debug.DrawRay(new Vector3(transform.position.x, 1.0f, transform.position.z), transform.forward * range, Color.red, 5.0f);
         if (Physics.Raycast(new Vector3(transform.position.x,1.0f,transform.position.z), transform.forward, out hit, range))
         {
             if (hit.collider.gameObject.tag == "Player")

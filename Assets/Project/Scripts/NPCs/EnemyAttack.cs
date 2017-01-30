@@ -17,6 +17,8 @@ public class EnemyAttack : MonoBehaviour {
     public float SpeedMeleeAttack;
     public float meleeDamage;
 
+    public BufferedSound shootSound;
+    public BufferedSound meleeSound;
 
     float time;
 
@@ -38,6 +40,7 @@ public class EnemyAttack : MonoBehaviour {
                     if (GetComponentInChildren<RangedWeapon>() != null)
                     {
                         GetComponentInChildren<RangedWeapon>().Shoot();
+                        shootSound.Play();
                     }
                 }
                 attackRanged = false;
@@ -55,6 +58,7 @@ public class EnemyAttack : MonoBehaviour {
                 {
                     GetComponentInChildren<MeleeWeapon>().Hit();
                     GetComponent<Animator>().SetBool("Hit", true);
+                    meleeSound.Play();
                 }
                 attackMelee = false;
                 time = 0;

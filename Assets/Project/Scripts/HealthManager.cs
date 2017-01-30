@@ -37,7 +37,8 @@ public class HealthManager : MonoBehaviour {
             if (health <= 0)
                 OnDead(new EventArgs());
 
-            hurtSound.Play();
+            if (hurtSound)
+                hurtSound.Play();
         }
     }
 

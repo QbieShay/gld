@@ -41,52 +41,55 @@ public class NpcBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!dead && playerTransform.gameObject.GetComponent<HealthManager>().health>0)
+        if (playerTransform.gameObject.GetComponent<HealthManager>().health >= 0)
         {
-          
-
-            timer += Time.deltaTime;
-
-
-            switch (behaviour)
+            if (!dead)
             {
-                case "Melee":
-                    transform.rotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position);
-                    GetComponent<EnemyAttack>().MeleeAttack();
 
-                    break;
 
-                case "Ranged":
-                    transform.rotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position);
-                    GetComponent<EnemyAttack>().RangeAttack();
-                    break;
+                timer += Time.deltaTime;
 
-                case "Search":
-                    obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(target.position);
 
-                    break;
+                switch (behaviour)
+                {
+                    case "Melee":
+                        transform.rotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position);
+                        GetComponent<EnemyAttack>().MeleeAttack();
 
-                case "Approach":
-                    //transform.rotation = Quaternion.LookRotation(new Vector3(targetSearch.position.x, transform.position.y, targetSearch.position.z) - transform.position);
-                    GetComponent<ApproachPlayer>().Approach();
-                    break;
+                        break;
 
-                case "Jump":
-                    //GetComponent<ApproachPlayer>().Approach();
-                    break;
+                    case "Ranged":
+                        transform.rotation = Quaternion.LookRotation(new Vector3(target.position.x, transform.position.y, target.position.z) - transform.position);
+                        GetComponent<EnemyAttack>().RangeAttack();
+                        break;
 
-                default:
-                    break;
+                    case "Search":
+                        obstacleAdvoidance.MoveTowardsPointAvoidingObstacles(target.position);
 
+                        break;
+
+                    case "Approach":
+                        //transform.rotation = Quaternion.LookRotation(new Vector3(targetSearch.position.x, transform.position.y, targetSearch.position.z) - transform.position);
+                        GetComponent<ApproachPlayer>().Approach();
+                        break;
+
+                    case "Jump":
+                        //GetComponent<ApproachPlayer>().Approach();
+                        break;
+
+                    default:
+                        break;
+
+
+                }
+                //Debug.Log("STATE: " + behaviour);
+            }
+            else
+            {
+
+                StartCoroutine(wait());
 
             }
-            //Debug.Log("STATE: " + behaviour);
-        }
-        else
-        {
-
-            StartCoroutine(wait());
-
         }
 
     }

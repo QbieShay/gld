@@ -48,6 +48,12 @@ public class Granade : MonoBehaviour
                     player.GetComponent<Animator>().SetBool("Hit", true);
                     player.GetComponent<HealthManager>().takeDamage(damage);
                 }
+
+                if (pick)
+                {
+                    GameObject.FindGameObjectWithTag("Magnus").GetComponent<EnemyEvade>().Evade(damage);
+                }
+
                 Instantiate(explotion, transform.position, transform.rotation);
                 Destroy(gameObject);
             }
@@ -64,7 +70,7 @@ public class Granade : MonoBehaviour
             Destroy(gameObject);
         }
 
-        if (other.gameObject.tag == "Magnus" && pick)
+        if (other.gameObject.tag == "Magnus")
         {
             Debug.Log("HITTTTTTTTTTTTT");
             other.gameObject.GetComponent<Animator>().SetBool("isHit", true);

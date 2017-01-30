@@ -23,8 +23,9 @@ public class PlayerAttack : MonoBehaviour
     private Riffle riffle;
     private Animator animator;
     public GameObject granadePoint;
-   
 
+    public BufferedSound shootSound;
+    public BufferedSound lightsaberSound;
 
     float firingAngle = 45.0f;
     float gravity = 9.8f;
@@ -58,6 +59,7 @@ public class PlayerAttack : MonoBehaviour
         {
             shootTime = 0f;
             riffle.Shoot();//bulletPrefab.Spawn(shootPoint.position, transform.rotation);
+            shootSound.Play();
         }
     }
 
@@ -70,6 +72,7 @@ public class PlayerAttack : MonoBehaviour
             lightsaber.Hit();
             animator.SetBool("AttackMelee", true);
             StartCoroutine(ResetMeleeAttack());
+            lightsaberSound.Play();
         }
     }
 

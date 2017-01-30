@@ -10,7 +10,8 @@ public class HealthManager : MonoBehaviour {
     bool invulnerable;
     public event EventHandler Dead;
     private float maxHealth;
-    
+
+    public BufferedSound hurtSound;
 
     void Start()
     {
@@ -35,6 +36,8 @@ public class HealthManager : MonoBehaviour {
             health -= damage;
             if (health <= 0)
                 OnDead(new EventArgs());
+
+            hurtSound.Play();
         }
     }
 

@@ -26,7 +26,10 @@ public class HPhud : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        text.text =target.GetComponent<HealthManager>().health + "/" + target.GetComponent<HealthManager>().getMaxHealth();
+        if(target.GetComponent<HealthManager>().health>0)
+            text.text =target.GetComponent<HealthManager>().health + "/" + target.GetComponent<HealthManager>().getMaxHealth();
+        else
+            text.text = 0 + "/" + target.GetComponent<HealthManager>().getMaxHealth();
 
         if (target.gameObject.tag == "Magnus")
         {

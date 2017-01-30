@@ -105,7 +105,7 @@ public class NpcBehaviour : MonoBehaviour
     {
 
         yield return new WaitForSeconds(5.0f);
-        UnityEngine.SceneManagement.SceneManager.LoadScene("FinalCut");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("cut");
 
     }
 

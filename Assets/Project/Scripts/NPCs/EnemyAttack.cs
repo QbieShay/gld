@@ -5,7 +5,9 @@ public class EnemyAttack : MonoBehaviour {
 
 	// Use this for initialization
     public int diceInitiative;
-    public int minimumRoll;
+    
+    public int minimumRollRange;
+    public int minimumRollMelee;
     int probability;
     UnityEngine.AI.NavMeshAgent nav;
     bool attackMelee = false;
@@ -31,7 +33,7 @@ public class EnemyAttack : MonoBehaviour {
             if (time >= SpeedRangedAttack)
             {
                 probability = Random.Range(1, diceInitiative);
-                if (probability > minimumRoll)
+                if (probability > minimumRollRange)
                 {
                     if (GetComponentInChildren<RangedWeapon>() != null)
                     {
@@ -49,7 +51,7 @@ public class EnemyAttack : MonoBehaviour {
             if (time >= SpeedMeleeAttack)
             {
                 probability = Random.Range(1, diceInitiative);
-                if (probability > minimumRoll)
+                if (probability > minimumRollMelee)
                 {
                     GetComponentInChildren<MeleeWeapon>().Hit();
                     GetComponent<Animator>().SetBool("Hit", true);

@@ -324,7 +324,7 @@ public class StealthCharacter : MonoBehaviour
 						GetComponent<CapsuleCollider>().radius+0.5f) && 
 					hitinfo.collider.bounds.center.y + (hitinfo.collider.bounds.extents/2f).y -
 				   	(gameObject.GetComponent<Collider>().bounds.center.y - (gameObject.GetComponent<Collider>().bounds.extents/2f).y)
-				   	< 2.1f)
+				   	< 2.1f && hitinfo.collider.gameObject.GetComponent<ClimbableWall>() != null)
 			{
 				Debug.Log("Climb");
 				StartCoroutine( Climb(hitinfo) );

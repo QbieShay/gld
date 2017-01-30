@@ -36,7 +36,7 @@ public class Granade : MonoBehaviour
         if (!changeColor)
             StartCoroutine(ChangeColor());
 
-        if (!flying && !pick)
+        if (!flying)
         {
             time += Time.deltaTime;
 

@@ -9,10 +9,10 @@ public class StageManager : MonoBehaviour {
     public Transform WayPoint;
     ObstacleAvoidance obstacleAdvoidance;
     NpcBehaviour behaviour;
-    public GameObject granate_launcher;
+    public GameObject granadeLauncher;
     GameObject gl;
     public GameObject riffle;
-    public GameObject granadeLauncher;
+
 
     Transform player;
     public int stage;
@@ -221,7 +221,7 @@ public class StageManager : MonoBehaviour {
 
     void DisableGranade()
     {
-        gl.SetActive(false);
+        granadeLauncher.SetActive(false);
         riffle.SetActive(true);
 
     }

@@ -35,7 +35,11 @@ public class LightSaber : MeleeWeapon
             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemies"))
             {
                 EnemyEvade ee = hit.collider.GetComponentInParent<EnemyEvade>();
-                ee.Evade(playerAttack.GetMeleeAttackDamage());
+                bool evade=ee.Evade(playerAttack.GetMeleeAttackDamage());
+                if (evade)
+                {
+                    hit.collider.GetComponent<Animator>().SetBool("Evade", true);
+                }
             }
         }
 

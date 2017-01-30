@@ -11,7 +11,8 @@ public class StageManager : MonoBehaviour {
     NpcBehaviour behaviour;
     public GameObject granate_launcher;
     GameObject gl;
-    GameObject riffle;
+    public GameObject riffle;
+    public GameObject granadeLauncher;
 
     Transform player;
     public int stage;
@@ -28,7 +29,6 @@ public class StageManager : MonoBehaviour {
         obstacleAdvoidance = GetComponent<ObstacleAvoidance>();
         behaviour = GetComponent<NpcBehaviour>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        riffle = GameObject.FindGameObjectWithTag("MagnusRiffle");
         health = GetComponent<HealthManager>();
  
     }
@@ -203,10 +203,7 @@ public class StageManager : MonoBehaviour {
     void EnableGranade()
     {
         Debug.Log("ENABLE GRANADE");
-       
-        gl = Instantiate(granate_launcher, riffle.transform.position, riffle.transform.rotation);
-        gl.transform.parent = riffle.transform.parent;
-       
+        granadeLauncher.SetActive(true);
       
     }
 

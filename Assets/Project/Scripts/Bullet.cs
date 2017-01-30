@@ -61,16 +61,13 @@ public class Bullet : MonoBehaviour {
     void OnCollisionEnter(Collision other)
     {
 
-        if (other.gameObject.tag == "Wall")
-            gameObject.Recycle();
-
-
+       
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             float damage = shooter.GetComponentInParent<EnemyAttack>().rangedDamage;
             other.gameObject.GetComponent<Animator>().SetBool("Hit", true);
             other.gameObject.GetComponentInParent<HealthManager>().takeDamage(damage);
-            gameObject.Recycle();
+            
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("Enemies"))
         {
@@ -78,17 +75,12 @@ public class Bullet : MonoBehaviour {
             bool evaded = other.gameObject.GetComponentInParent<EnemyEvade>().Evade(damage);
             if (evaded)
             {
-                // TODO: evade animation
+                other.gameObject.GetComponent<Animator>().SetBool("Evade", true);
             }
-            else
-            {
-                gameObject.Recycle();
-            }
+            
         }
-        else
-        {
-            gameObject.Recycle();
-        }
+        gameObject.Recycle();
+        
     }
 
 

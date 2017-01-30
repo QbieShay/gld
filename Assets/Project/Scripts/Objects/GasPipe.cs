@@ -9,6 +9,7 @@ public class GasPipe : MonoBehaviour{
 	public float offsetTime;
 	public float ActiveTime;
 	public float PauseTime;
+	public GameObject particle;
 	
 	void Start(){
 		//We don't want coroutines to do nothing
@@ -25,9 +26,11 @@ public class GasPipe : MonoBehaviour{
 		while(true){
 			GetComponent<Collider>().enabled = true;
 			GetComponent<Renderer>().enabled = true;
+			particle.SetActive(true);
 			yield return new WaitForSeconds(ActiveTime);
 			GetComponent<Collider>().enabled = false;
 			GetComponent<Renderer>().enabled = false;
+			particle.SetActive(false);
 			yield return new WaitForSeconds(PauseTime);
 		}
 	}

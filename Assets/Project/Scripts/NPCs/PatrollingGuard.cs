@@ -25,6 +25,7 @@ public class PatrollingGuard : MonoBehaviour
     public float waypointReachedThreshold = 0.1f;
     public GameObject spawnOnDefeated;
     public float lookCarefullyDuration = 3;
+    public AudioSource spottedSound;
 
     private int pathIndex = 0;
     private Vector3 currentDestination;
@@ -355,10 +356,13 @@ public class PatrollingGuard : MonoBehaviour
     private void ActionSpotPlayer()
     {
         player.GetComponent<StealthCharacterUserControl>().enabled = false;
+        GetComponentInChildren<VisionConeRenderer>().gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.red);
+        if (spottedSound)
+            spottedSound.Play();
         StartCoroutine(RotateTowardsPlayer(45f, 10f, () =>
         {
             animator.SetBool("Spot", true);
-            Vector3 targetPosition = transform.position + transform.forward * 5 + transform.up * 2;
+            Vector3 targetPosition = transform.position + transform.forward * 1.5f + transform.up * 1f;
             Vector3 targetRotation = transform.eulerAngles;
             targetRotation.y += 180f;
             MoveCamera(targetPosition, targetRotation, 1);

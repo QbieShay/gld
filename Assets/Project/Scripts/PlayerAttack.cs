@@ -22,6 +22,7 @@ public class PlayerAttack : MonoBehaviour
     private LightSaber lightsaber;
     private Riffle riffle;
     private Animator animator;
+    public GameObject granadePoint;
    
 
 
@@ -95,7 +96,7 @@ public class PlayerAttack : MonoBehaviour
                
                 GameObject magnus = GameObject.FindGameObjectWithTag("Magnus");
                 g.picking(true);
-                g.shoot(magnus);
+                g.shoot(granadePoint);
             }
         }
            

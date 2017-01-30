@@ -72,8 +72,7 @@ public class Bullet : MonoBehaviour {
         else if (other.gameObject.layer == LayerMask.NameToLayer("Enemies"))
         {
             float damage = shooter.GetComponentInParent<PlayerAttack>().getRangedDamage();
-            bool evaded = other.gameObject.GetComponentInParent<EnemyEvade>().Evade(damage);
-            if (evaded)
+            if (other.gameObject.GetComponentInParent<EnemyEvade>().Evade(damage))
             {
                 other.gameObject.GetComponent<Animator>().SetBool("Evade", true);
             }

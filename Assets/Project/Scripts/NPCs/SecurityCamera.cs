@@ -24,6 +24,7 @@ public class SecurityCamera : MonoBehaviour
     public WaypointTime[] path;
     public Ease ease = Ease.Linear;
     public float movementDuration; // the time used to go from a waypoint to another
+    public AudioSource spottedSound;
 
     private int pathIndex = 0;
     private bool ping = true; // whether we're moving from 1st WP to last, or we're coming back from last to 1st
@@ -133,6 +134,9 @@ public class SecurityCamera : MonoBehaviour
         tween.Pause();
         player.GetComponent<StealthCharacterUserControl>().enabled = false;
         StartCoroutine(RestartLevelAfterSeconds(2f));
+        GetComponentInChildren<VisionConeRenderer>().gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.red);
+        if (spottedSound)
+            spottedSound.Play();
     }
 
     #endregion

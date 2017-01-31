@@ -39,6 +39,7 @@ public class StatsManager
 
         if (strenght == 0)
             strenght = 2;
+
         int d = rnd.Next(1, strenght);
         return weapon + 2*strenght * d;
     }

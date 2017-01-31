@@ -10,13 +10,13 @@ public class FirstCutFlow : MonoBehaviour {
 	}
 
 	public void Dex(){
-		StatsManager.dexterity = 10;
-		StatsManager.strenght = 4;
+		StatsManager.dexterity = 6;
+		StatsManager.strenght = 2;
 		LoadNextScene();
 	}
 	public void Str(){
-		StatsManager.dexterity = 4;
-		StatsManager.strenght = 10;
+		StatsManager.dexterity = 2;
+		StatsManager.strenght = 6;
 		LoadNextScene();
 	}
 

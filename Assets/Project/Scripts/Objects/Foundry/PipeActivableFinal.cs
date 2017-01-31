@@ -14,9 +14,7 @@ public class PipeActivableFinal : PipeActivable{
 	void Start(){
 		//all = int.MaxValue;
 		all = ~0;
-	if(cratesInPosition == null){
-			cratesInPosition = new HashSet<GameObject>();
-		}
+		cratesInPosition = new HashSet<GameObject>();
 	}
 
 	private static string scene = "null";
